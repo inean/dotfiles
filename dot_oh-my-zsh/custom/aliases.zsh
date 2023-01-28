@@ -37,3 +37,6 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
+
+# If inside a github repo, open the repo in the browser
+alias gho="git remote -v | grep fetch | grep -oE 'https://github.com/\S+' | xargs -I{} open {}"
