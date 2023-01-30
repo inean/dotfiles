@@ -3,7 +3,7 @@
 ![Platform](https://img.shields.io/badge/platform-macos%20%7C%20linux-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-Template dotfiles repository, managed with [chezmoi](https://chezmoi.io/).
+Personal dotfiles repository, managed with [chezmoi](https://chezmoi.io/).
 
 Roughly speaking,**chezmoi** stores the desired state of your dotfiles in the directory
 `~/.local/share/chezmoi`. When you run `chezmoi apply`,**chezmoi** calculates the
@@ -19,20 +19,20 @@ single command:
 sh -c "$(curl -fsLS get.chezmoi.io)"
 ```
 
-If you already have a dotfiles repo using **chezmoi** on [GitHub](https://github.com) at
-`https://github.com/$GITHUB_USERNAME/dotfiles` then you can install **chezmoi** and your
-dotfiles with the single command:
-
-```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
-```
-
 Alternatively, to install the `chezmoi` binary in a different directory, use the `-b`
 option, for example:
 
 ```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin init --apply $GITHUB_USERNAME
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin
 ```
+
+After `chezmoi` is installed, deply dotfiles with:
+```sh
+chezmoi init inean
+````
+
+Personal secrets are stored with [gopass](https://www.gopass.pw/) and you\'ll
+need the gopass CLI(`gopass`).
 
 ## Quick start
 

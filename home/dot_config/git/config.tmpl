@@ -1,8 +1,8 @@
 # This is Git's per-user configuration file.
 [user]
 
+	name = Carlos Martín
 	email = {{ .email }}
-	name = {{ .name }}
 
 [alias]
 
@@ -150,6 +150,18 @@
 	# Automatically correct and execute mistyped commands.
 	autocorrect = 1
 
+{{ if .personal -}}
+[http]
+
+	# Where to store cookie files
+	cookiefile = ~/.config/git/cookies
+{{ end -}}
+
+
+[init]
+	# Main branch name
+	defaultBranch = main
+
 [merge]
 
 	# Include summaries of merged commits in newly created merge commit messages
@@ -168,7 +180,25 @@
 	# Make `git push` push relevant annotated tags when pushing branches out.
 	followTags = true
 
+[rebase]
+	autosquash = true
+	autostash = true
+
+{{ if eq .chezmoi.os "windows" -}}
+[safe]
+	directory = {{ .chezmoi.workingTree }}
+{{ end -}}
+[status]
+	submoduleSummary = true
+
 # URL shorthands
+
+{{- if .personal }}
+[url "git@github.com:inean/"]
+	insteadOf = https://github.com/inean/
+[url "git@github.com:artecoids/"]
+	insteadOf = https://github.com/artecoids/
+{{- end }}
 
 [url "git@github.com:"]
 
@@ -190,6 +220,11 @@
 
 	insteadOf = "gist:"
 
-[init]
-
-	defaultBranch = main
+{{- $ghPath := lookPath "gh" }}
+{{- if $ghPath }}
+[credential "https://github.com"]
+	helper = !{{ $ghPath }} auth git-credential
+[credential "https://gist.github.com"]
+	helper = !{{ $ghPath }} auth git-credential
+{{- end }}
+{{/* vim: set filetype=gitconfig: */}}
