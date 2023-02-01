@@ -1,14 +1,23 @@
 {{/* boolean feature tags */}}
 {{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
-{{- $flarm := false -}}{{/* true if this machine is used for FLARM */}}
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $is_wsl := false -}}{{/* true if this is a WSL linux machine */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- "" -}}
 
-{{- $osID := .chezmoi.os -}}
+{{/* os short name */}}
+{{- $osid := .chezmoi.os -}}
 {{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
-{{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{/* detect WSL */}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+{{-     $headless = true -}}
+{{-     $is_wsl = true -}}
+{{-   end -}}
 {{- end -}}
 
 {{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
@@ -17,26 +26,24 @@
 {{-   $headless = true -}}
 {{- end -}}
 
-{{/* work around unreliable hostname on darwin */}}
-{{- $hostname := .chezmoi.hostname -}}
-{{- if eq .chezmoi.os "darwin" -}}
-{{-   $computerName := output "scutil" "--get" "ComputerName" | trim -}}
+{{/* prompt input */}}
+{{- $email := "" -}}
+{{- if stdinIsATTY -}}
+{{-     if hasKey . "email" -}}
+{{-         $email = .email -}}
+{{-     else -}}
+{{-         $email = promptString "email" -}}
+{{-     end -}}
 {{- end -}}
-
-{{- if eq .chezmoi.os "windows" -}}
-{{-   $ephemeral = true -}}
-{{- end -}}
-
 {{- if not $ephemeral -}}
-{{-   if eq $hostname "legion" -}}
+{{-   if eq $hostname "mbp2022" -}}
 {{-     $docker = true -}}
-{{-     $flarm = true -}}
-{{-   else if eq $hostname "raspberrypi4" -}}
-{{-     $headless = true -}}
-{{-     $personal = true -}}
-{{-   else if eq $hostname "thinkpad" -}}
 {{-     $personal = true -}}
 {{-   else if eq $hostname "mbp2013" -}}
+{{-     $docker = true -}}
+{{-     $personal = true -}}
+{{-   else if eq $hostname "raspberrypi" -}}
+{{-     $headless = true -}}
 {{-     $personal = true -}}
 {{-   else if stdinIsATTY -}}
 {{-     $headless = promptBoolOnce . "headless" "headless" -}}
@@ -50,18 +57,11 @@
 {{-   end -}}
 {{- end -}}
 
-{{- $email := "inean.es@gmail.com" -}}
-{{- if $flarm -}}
-{{-   $email = "tom.payne@flarm.com" -}}
-{{- end -}}
-
 [data]
-    docker = {{ $docker }}
-    ephemeral = {{ $ephemeral }}
     email = {{ $email | quote }}
-    flarm = {{ $flarm }}
+    ephemeral = {{ $ephemeral }}
+    docker = {{ $docker }}
     headless = {{ $headless }}
     hostname = {{ $hostname | quote }}
     personal = {{ $personal }}
-    onepasswordAccount = "FIXME"
-    osid = {{ $osID | quote }}
+    osid = {{ $osid | quote }}

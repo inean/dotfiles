@@ -1,3 +1,12 @@
+# General
+.devcontainer.json
+.helpers
+.github
+.vscode
+install.sh
+README.md
+UNLICENSE
+
 {{ if ne .chezmoi.os "darwin" }}
 .chezmoiscripts/darwin/**
 {{ end }}
@@ -6,22 +15,5 @@
 .chezmoiscripts/linux/**
 {{ end }}
 
-{{ if ne .chezmoi.os "windows" }}
-.chezmoiscripts/windows/**
-Documents
-{{ else }}
-.bash_aliases
-.config/git/cookies
-.gnupg
-.gnupg/**
-.ssh/id_rsa
-.ssh/id_rsa.pub
-.zprofile
-.zshrc
-{{ end }}
-
 {{ if not .personal }}
-{{ end }}
-
-{{ if not .flarm }}
 {{ end }}

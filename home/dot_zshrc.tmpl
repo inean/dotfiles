@@ -1,4 +1,16 @@
+# read starship prompt config
+eval "$(starship init zsh)"
 
+# load fzf
+export FZF_DEFAULT_OPTS='--border'
+source $(brew --prefix)/fzf/*/shell/key-bindings.zsh
+source $(brew --prefix)/fzf/*/shell/completion.zsh
+
+# editor configuration
+export EDITOR=vim
+
+# load git automcompletion
+autoload -Uz compinit && compinit
 
 # plugin management
 ZSH_CUSTOM_PLUGINS=$XDG_CACHE_HOME/zsh/plugins
@@ -17,7 +29,7 @@ fi
   "zsh-completions"
   "zsh-interactive-cd"
   "zsh-history-substring-search") }}
-{{-   $pluginDir := joinPath $ZSH_CUSTOM_PLUGINS . }}
+{{-   $pluginDir := joinPath "$ZSH_CUSTOM_PLUGINS" . }}
 {{-   if stat $pluginDir }}
 {{-     $pluginFiles := mustFind $pluginDir }}
 {{-     range $pluginFiles }}

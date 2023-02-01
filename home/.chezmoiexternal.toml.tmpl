@@ -1,3 +1,43 @@
+# vim: filetype=toml
+
+# Shell configuration helper
+[".config/xsh"]
+    type = "archive"
+    url = "https://github.com/simifalaye/xsh/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+
+{{- if and (not .ephemeral) (not .headless) }}
+{{-   $fontDir := "" }}
+{{-   if eq .chezmoi.os "darwin" }}
+{{-     $fontDir = "Library/Fonts" }}
+{{-   else if eq .chezmoi.os "linux" }}
+{{-     $fontDir = ".local/share/fonts" }}
+{{-   end }}
+
+# Install MesloLGS fonts
+{{-   range (list
+        "MesloLGS NF Regular.ttf"
+        "MesloLGS NF Bold.ttf"
+        "MesloLGS NF Italic.ttf"
+        "MesloLGS NF Bold Italic.ttf") }}
+["{{ $fontDir }}/{{ . }}"]
+    type = "file"
+    url = "https://github.com/romkatv/powerlevel10k-media/raw/master/{{ . }}"
+    refreshPeriod = "168h"
+{{-   end }}
+
+#Install Fira Code fonts
+{{-   range (list
+        "Fira Code Regular Nerd Font Complete.ttf"
+        "Fira Code Regular Nerd Font Complete Mono.ttf") }}
+["{{ $fontDir }}/{{ . }}"]
+    type = "file"
+    url = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Regular/complete/{{ . }}"
+    refreshPeriod = "168h"
+{{-   end }}
+
+{{- end }}
 
 [".cache/zsh/plugins/alias-tips"]
     type = "archive"
@@ -15,26 +55,7 @@
 
 [".cache/zsh/plugins/zsh-defer"]
     type = "archive"
-    url = "https://github.com/romkatv/archive/master.tar.gz"
+    url = "https://github.com/romkatv/zsh-defer/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
-
-{{- if and (not .ephemeral) (not .headless) }}
-{{-   $fontDir := "" }}
-{{-   if eq .chezmoi.os "darwin" }}
-{{-     $fontDir = "Library/Fonts" }}
-{{-   else if eq .chezmoi.os "linux" }}
-{{-     $fontDir = ".local/share/fonts" }}
-{{-   end }}
-{{-   range (list
-        "MesloLGS NF Regular.ttf"
-        "MesloLGS NF Bold.ttf"
-        "MesloLGS NF Italic.ttf"
-        "MesloLGS NF Bold Italic.ttf") }}
-["{{ $fontDir }}/{{ . }}"]
-    type = "file"
-    url = "https://github.com/romkatv/powerlevel10k-media/raw/master/{{ . }}"
-    refreshPeriod = "168h"
-{{-   end }}
-{{- end }}
