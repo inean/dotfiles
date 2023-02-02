@@ -12,6 +12,14 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
+{{/* detect MacOS verson */}}
+{{- if eq .chezmoi.os "darwin" -}}
+    {{ $macos_version := output "sw_vers" "-productVersion" | trim }}
+    {{- if ne $macos_version "" -}}
+        {{- $osid = printf "%s-%s" .chezmoi.os $macos_version -}}
+    {{- end -}}
+{{- end -}}
+
 {{/* detect WSL */}}
 {{- if eq .chezmoi.os "linux" -}}
 {{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
@@ -36,13 +44,13 @@
 {{-     end -}}
 {{- end -}}
 {{- if not $ephemeral -}}
-{{-   if eq $hostname "mbp2022" -}}
+{{-   if eq .chezmoi.hostname "mbp2022" -}}
 {{-     $docker = true -}}
 {{-     $personal = true -}}
-{{-   else if eq $hostname "mbp2013" -}}
+{{-   else if eq .chezmoi.hostname "mbp2013" -}}
 {{-     $docker = true -}}
 {{-     $personal = true -}}
-{{-   else if eq $hostname "raspberrypi" -}}
+{{-   else if eq .chezmoi.hostname "raspberrypi" -}}
 {{-     $headless = true -}}
 {{-     $personal = true -}}
 {{-   else if stdinIsATTY -}}
@@ -62,6 +70,6 @@
     ephemeral = {{ $ephemeral }}
     docker = {{ $docker }}
     headless = {{ $headless }}
-    hostname = {{ $hostname | quote }}
+    hostname = {{ .chezmoi.hostname | quote }}
     personal = {{ $personal }}
     osid = {{ $osid | quote }}

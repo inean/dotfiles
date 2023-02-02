@@ -9,7 +9,3 @@ Host *
 
 Host github.com
   User git
-
-{{- if .flarm }}
-{{ onepasswordRead "op://FLARM/SSH Config/notesPlain" .onepasswordAccount }}
-{{- end }}

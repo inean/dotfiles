@@ -1,7 +1,0 @@
-{{ if stat "/usr/local/bin/brew" -}}
-fpath+=("$(/usr/local/bin/brew --prefix)/share/zsh/site-functions")
-eval "$(/usr/local/bin/brew shellenv)"
-{{ else if stat ".local/bin/brew" -}}
-eval "$(.local/bin/brew shellenv)"
-fpath+=("$(./local/bin/brew --prefix)/share/zsh/site-functions")
-{{ end -}}

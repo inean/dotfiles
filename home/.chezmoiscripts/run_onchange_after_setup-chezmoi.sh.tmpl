@@ -3,7 +3,7 @@
 #
 # Setup a linux-based system
 #
-{{- if eq chezmoi.os "linux" "darwin" }}
+{{- if eq .chezmoi.os "linux" "darwin" }}
 {{-   include ".helpers/common.sh" }}
 
 # ======

@@ -71,6 +71,15 @@ is_callable()
     done
 }
 
+# From a well formatted version string, determine if it is at least a given version
+# @param ver: version string
+# @param minver: minimum version string
+# @return 0 if true
+is_atleast()
+{
+    printf '%s\n%s\n' "$2" "$1" | sort --check=quiet --version-sort
+}
+
 # Determine the latest release version of a github repo
 # @param repo: repo shortname (<user>/<repo-name>)
 # @param prefix: prefix of the version names (sometimes it starts with "v")

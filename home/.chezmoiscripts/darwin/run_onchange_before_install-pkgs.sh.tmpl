@@ -4,7 +4,7 @@
 # Install core required packages for a Ubuntu machine
 # Currently only supports 22.04+ (earlier LTS will have older releases)
 #
-{{ if eq .os "darwin" -}}
+{{ if eq .chezmoi.os "darwin" -}}
 {{ include ".helpers/common.sh" }}
 {{ include ".helpers/pkgs.sh" }}
 
@@ -43,9 +43,6 @@ step "Installing core apps/managers"
 sudo apt update
 brew_install curl git nodejs npm python3 python3-pip wget
 {{ if not .headless -}}
-if is_gui; then
-    brew_install policykit-1-gnome gnome-tweaks
-fi
 {{ end -}} # [if not headless]
 
 step "Installing packages"
