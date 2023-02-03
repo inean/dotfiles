@@ -51,8 +51,6 @@ if is_callable fzf; then
     eg() {
         if git rev-parse --git-dir > /dev/null 2>&1; then
             git ls-files | fzf -m --preview "cat {}" | xargs ${EDITOR}:
-        elif is_callable yadm; then
-            yadm ls-files | fzf -m --preview "cat {}" | xargs ${EDITOR}:
         else
             echo "Not in git dir" && return
         fi

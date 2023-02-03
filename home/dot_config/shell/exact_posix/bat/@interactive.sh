@@ -1,5 +1,5 @@
 #
-# Fzf configuration module
+# Bat configuration module
 #
 
 # Abort if requirements are not met.

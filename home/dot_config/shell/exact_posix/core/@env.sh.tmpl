@@ -19,7 +19,7 @@ path_remove () {
     local dir
     local var=${2:-PATH}
     # Bash has ${!var}, but this is not portable.
-    for dir in `indirect_expand "$var"`; do
+    for dir in $(indirect_expand "$var"); do
         IFS=''
         if [ "$dir" != "$1" ]; then
             newpath=$newpath:$dir
@@ -37,7 +37,7 @@ path_prepend () {
     # remove it so we can move it to the front
     path_remove "$1" "$2"
     local var="${2:-PATH}"
-    local value=`indirect_expand "$var"`
+    local value=$(indirect_expand "$var")
     export ${var}="${1}${value:+:${value}}"
 }
 
@@ -48,7 +48,7 @@ path_append () {
     [ -d "${1}" ] || return
     path_remove "${1}" "${2}"
     local var=${2:-PATH}
-    local value=`indirect_expand "$var"`
+    local value=$(indirect_expand "$var")
     export $var="${value:+${value}:}${1}"
 }
 
@@ -80,15 +80,89 @@ load_repo () {
     fi
 }
 
+# Usage: github-cd <user/repo>
+# Eg, to cd to a github repo:
+#     github-cd zdharma/zinit
+github-cd() {
+	local dir="${HOME}/src/github.com/$1"
+	cd "${dir}"
+}
+
+# Usage: github-clone <user/repo>
+# Eg, to clone a github repo:
+#   github-clone zdharma/zinit
+github-clone-cd() {
+	local prefix=https://github.com/
+	if [ "$1" = "--ssh" ]; then
+		prefix=git@github.com:
+		shift
+	fi
+	local dir="${HOME}/src/github.com/$1"
+	if [ ! -d "${dir}" ]; then
+		git clone "${prefix}$1.git" "${dir}"
+	fi
+	cd "${dir}"
+}
+
+# Usage: github-clone <user/repo>
+# Eg, to clone a github repo:
+#   github-clone-code zdharma/zinit
+github-clone-code() {
+	local prefix=https://github.com/
+	if [ "$1" = "--ssh" ]; then
+		prefix=git@github.com:
+		shift
+	fi
+	local dir="${HOME}/src/github.com/$1"
+	if [ ! -d "${dir}" ]; then
+		git clone "${prefix}$1.git" "${dir}"
+	fi
+	code "${dir}"
+}
+
 # General
 # =========
+
+# If you come from bash you might have to change your $PATH.
+{{- $paths := list }}
+{{- $homeDir := .chezmoi.homeDir }}
+{{- range $_, $relPath := list "bin" "go/bin" ".cargo/bin" ".local/bin" }}
+{{    $path := joinPath $homeDir $relPath }}
+{{-   if stat $path }}
+{{-     $paths = mustAppend $paths $path }}
+{{-   end }}
+{{- end }}
+{{- if $paths }}
+export PATH={{ toStrings $paths | join ":" }}:$PATH
+{{- end }}
 
 # Explicitly set XDG base dirs as they are needed later
 export XDG_CACHE_HOME="${HOME}/.cache" && mkdir -p ${XDG_CACHE_HOME}
 export XDG_CONFIG_HOME="${HOME}/.config" && mkdir -p ${XDG_CONFIG_HOME}
+export XDG_BIN_HOME="${HOME}/.local/bin" && mkdir -p ${XDG_BIN_HOME}
 export XDG_DATA_HOME="${HOME}/.local/share" && mkdir -p ${XDG_DATA_HOME}
 export XDG_STATE_HOME="${HOME}/.local/state" && mkdir -p ${XDG_STATE_HOME}
-export XDG_BIN_HOME="${HOME}/.local/bin" && mkdir -p ${XDG_BIN_HOME}
+
+# App specific overrides
+export GNUPGHOME="${XDG_DATA_HOME}/gnupg" && mkdir -p ${GNUPGHOME}
+
+# go
+export GOPATH="${XDG_DATA_HOME}/go"
+
+# cargo
+export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
+export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+
+# npm
+export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
+
+# editor
+{{- if eq .chezmoi.os "darwin" }}
+export HOMEBREW_NO_AUTO_UPDATE=1
+{{- end -}}
+export LANG=es_ES.UTF-8
+export LC_ALL=es_ES.UTF-8
 
 # Create files/dirs with owner r/w permissions
 umask 0022

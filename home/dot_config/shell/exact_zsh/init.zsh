@@ -14,7 +14,6 @@ xsh module core
 # Load application modules that have no requirements
 xsh module -s posix bat interactive
 xsh module -s posix trash interactive:logout
-xsh module -s posix zk interactive
 xsh module -s bash base16 interactive
 xsh module -s bash exa interactive
 xsh module -s bash ripgrep interactive
@@ -23,7 +22,7 @@ xsh module zoxide interactive
 
 # Load plugin manager
 # NOTE: ZLE and completion will be setup here
-xsh module zim interactive
+#xsh module zim interactive
 
 # Load extra modules that provide and bind ZLE widgets
 xsh module fzf interactive

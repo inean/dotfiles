@@ -10,7 +10,7 @@
 # ---
 
 # Set a custom prefix for the generated aliases. The default prefix is 'G'.
-zstyle ':zim:git' aliases-prefix 'g'
+zstyle ':zim:git' aliases-prefix 'G'
 
 # input
 # -----
@@ -75,11 +75,3 @@ source ${ZIM_HOME}/init.zsh
 
 # zsh-history-substring-search
 # ----------------------------
-
-# Bind Up/Down, C-n/p and k/j (in vi mode) for history substring up/down
-bindkey "$key_info[Up]" history-substring-search-up
-bindkey "$key_info[Control]p" history-substring-search-up
-bindkey "$key_info[Down]" history-substring-search-down
-bindkey "$key_info[Control]n" history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
