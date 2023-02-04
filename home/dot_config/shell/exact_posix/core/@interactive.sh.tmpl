@@ -1,69 +1,40 @@
 #
-# Core configuration module
+# Core configuration module.
 #
-
-# Options
-# =======
 
 # Fetch the current TTY.
 [ ! "$TTY" ] && TTY="$(tty)"
 
 # Disable control flow (^S/^Q).
 [ -r "${TTY:-}" ] && [ -w "${TTY:-}" ] && command -v stty >/dev/null \
-    && stty -ixon <"$TTY" >"$TTY" || true
+  && stty -ixon <"$TTY" >"$TTY" || true
 
 # General parameters and options.
 HISTFILE=        # in-memory history only
 set -o noclobber # do not allow '>' to truncate existing files, use '>|'
 set -o notify    # report the status of background jobs immediately
 
-take() { [[ -n ${1} ]] && mkdir -p ${1} && builtin cd ${1}; }
+# Elementary.
+alias reload='exec "$XSHELL"' # reload the current shell configuration
+alias sudo='sudo '            # preserve aliases when running sudo
+alias su='su -l'              # safer, simulate a real login
 
-# Command: Back up a file. Usage "backupthis <filename/directory>"
-backupthis() { cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup; }
+# Git Helpers
+alias g="git"                 # git is a common command
+alias gnp="git --no-pager"    # git with no pager
+# If inside a github repo, open the repo in the browser
+alias gho="git remote -v | grep fetch | grep -oE 'https://github.com/\S+' | xargs -I{} open {}"
 
-# Pager
-# =====
+# Global aliases
+alias -g G="| grep -i"
+alias -g H="| head"
+alias -g T="| tail"
+alias -g L="| less"
 
-# Return if requirements are not met
-if [ "$TERM" != "dumb" ]; then
-    # Set default less options.
-    mkdir -p ${XDG_STATE_HOME}/less
-    export LESSHISTFILE="${XDG_STATE_HOME}/less/history"
-    export LESSKEY="${XDG_STATE_HOME}/less/key"
-    export LESSHISTSIZE=50
-    export LESS='-QRSMi -#.25'
-    # Set default colors for less.
-    export LESS_TERMCAP_mb=$'\E[01;31m'    # begins blinking
-    export LESS_TERMCAP_md=$'\E[01;34m'    # begins bold
-    export LESS_TERMCAP_me=$'\E[0m'        # ends mode
-    export LESS_TERMCAP_so=$'\E[00;47;30m' # begins standout-mode
-    export LESS_TERMCAP_se=$'\E[0m'        # ends standout-mode
-    export LESS_TERMCAP_us=$'\E[01;33m'    # begins underline
-    export LESS_TERMCAP_ue=$'\E[0m'        # ends underline
-fi
-
-#
-# Core configuration module
-#
-
-# Alias
-# =====
-
-# Easier navigation: .., ..., ...., ....., ~ and -
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ~="cd ~" # `cd` is probably faster to type though
-alias -- -="cd -"
-
-# Shortcuts
-alias dl="cd ~/Downloads"
-alias dt="cd ~/Desktop"
-alias p="cd ~/Projects"
-alias s="cd ~/src"
-alias c="${EDITOR} ."
+# List declared aliases, functions, paths
+alias aliases="alias | sed 's/=.*//'"
+alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
+alias paths='echo -e ${PATH//:/\\n}'
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -71,18 +42,15 @@ if ls --color > /dev/null 2>&1; then # GNU `ls`
 else # macOS `ls`
 	colorflag="-G"
 fi
-
-# List all files colorized in long format
-alias l="ls -lF ${colorflag}"
-
-# List all files colorized in long format, excluding . and ..
-alias la="ls -lAF ${colorflag}"
-
-# List only directories
-alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
-
-# Always use color output for `ls`
-alias ls="command ls ${colorflag}"
+if ls --group-directories-first > /dev/null 2>&1; then # GNU `ls`
+  groupflag="--group-directories-first"
+else # macOS `ls`
+  groupflag=""
+fi
+alias ls="command ls $colorflag"          # Always use color output for `ls`
+alias l="ls -lhAF $colorflag $groupflag"  # List all files colorized in long format, excluding . and ..
+alias lt="ls -lhAFtr $colorflag $groupflag" # List all files colorized in long format, excluding . and .. in traversal order
+alias lsd="ls -ld $colorflag */"
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
@@ -90,49 +58,44 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-# Enable aliases to be sudo’ed
-alias sudo='sudo '
+# Directory navigation.
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias -- -="cd -"                  # Go to previous dir with -
+alias cd.='cd $(readlink -f .)'    # Go to real dir (i.e. if current dir is linked)
+alias ~="cd ~"                     # Go Home
 
-# Get week number
-alias week='date +%V'
+# Shortcuts
+alias d="cd ~/Documents"
+alias dl="cd ~/Downloads"
+alias dt="cd ~/Desktop"
+alias p="cd ~/Projects"
 
-# Get macOS Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
-alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update; sudo gem cleanup'
+# Making/Changing directories.
+alias mkdir='mkdir -pv'
+mkcd() { mkdir "$@" && cd "${@:$#}"; } # ${@:$#} is a bashism
 
-# Google Chrome
-alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
-alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary'
+# Simple progress bar output for downloaders by default.
+alias curl='curl --progress-bar'
+alias wget='wget -q --show-progress'
 
-# IP addresses
-alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en0"
-alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+# Preferred applications.
+alias e='${VISUAL:-$EDITOR}'
+alias p='$PAGER'
+alias b='$BROWSER'
 
-# Show active network interfaces
-alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
+# Network
+alias ip="curl -s ipinfo.io | jq -r '.ip'"
+alias ipl="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
+alias http-serve='python3 -m http.server' # Serve a directory via HTTP.
 
-# Flush Directory Service cache
-alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+# Miscellaneous.
+alias o='open'
+alias config='chezmoi'
 
-# Clean up LaunchServices to remove duplicates in the “Open With” menu
-alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
-
-# Canonical hex dump; some systems have this symlinked
-command -v hd > /dev/null || alias hd="hexdump -C"
-
-# macOS has no `md5sum`, so use `md5` as a fallback
-command -v md5sum > /dev/null || alias md5sum="md5"
-
-# macOS has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
-
-# JavaScriptCore REPL
-jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc";
-[ -e "${jscbin}" ] && alias jsc="${jscbin}";
-unset jscbin;
-
-# Trim new lines and copy to clipboard
-alias c="tr -d '\n' | pbcopy"
+{{- if eq .chezmoi.os "darwin" -}}
 
 # Recursively delete `.DS_Store` files
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
@@ -142,62 +105,19 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 # Finally, clear download history from quarantine. https://mths.be/bum
 alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
 
-# Show/hide hidden files in Finder
-{{ if eq .chezmoi.os "darwin" }}
-alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+# macOS has no `md5sum`, so use `md5` as a fallback
+command -v md5sum > /dev/null || alias md5sum="md5"
 
-# Hide/show all desktop icons (useful when presenting)
-alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
-alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-{{ end }}
+# macOS has no `sha1sum`, so use `shasum` as a fallback
+command -v sha1sum > /dev/null || alias sha1sum="shasum"
 
-# URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+# flush DNS cache
+alias flushdns="dscacheutil -flushcache && killall -HUP mDNSResponder" # Flush DNS cache
 
-# Merge PDF files, preserving hyperlinks
-# Usage: `mergepdf input{1,2,3}.pdf`
-alias mergepdf='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=_merged.pdf'
+# logout current user
+alias logoff="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend" # Log off current user
 
-{{ if eq .chezmoi.os "darwin" }}
-# Disable Spotlight
-alias spotoff="sudo mdutil -a -i off"
-# Enable Spotlight
-alias spoton="sudo mdutil -a -i on"
+# Quick Look files in Finder
+alias ql="qlmanage -p &>/dev/null"
 
-# Airport CLI alias
-alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
-{{ end }}
-
-# Intuitive map function
-# For example, to list all directories that contain a certain file:
-# find . -name .gitattributes | map dirname
-alias map="xargs -n1"
-
-# One of @janmoesen’s ProTip™s
-for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-	alias "${method}"="lwp-request -m '${method}'"
-done
-
-# Kill all the tabs in Chrome to free up memory
-# [C] explained:
-# http://www.commandlinefu.com/commands/view/402/exclude-grep-from-your-grepped-output-of-ps-alias-included-in-description
-alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
-
-# Reload the shell (i.e. invoke as a login shell)
-alias reload="exec ${SHELL} -l"
-
-# Print each PATH entry on a separate line
-alias path='echo -e ${PATH//:/\\n}'
-
-# Config.
-alias config='chezmoi'
-
-# Git
-alias g='git'
-alias gnp="git --no-pager"
-
-# If inside a github repo, open the repo in the browser
-alias gho="git remote -v | grep fetch | grep -oE 'https://github.com/\S+' | xargs -I{} open {}"
-
-{{/* vim: set filetype=sh: */}}
+{{- end -}}

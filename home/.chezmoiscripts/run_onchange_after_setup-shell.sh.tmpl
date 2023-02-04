@@ -1,29 +1,31 @@
 #!/bin/bash
-# vim: filetype=bash
-#
-# Setup a POSIX-based system
-#
-{{ if eq .chezmoi.os "linux" "darwin" -}}
-{{ include ".helpers/common.sh" }}
 
+set -ef -o pipefail
+
+{{ if eq .chezmoi.os "linux" "darwin" }}
 # ======
 # MAIN
 # ======
-msg "After: Setting up shell"
 
+echo "After: Setting up shell"
+
+{{ if eq .chezmoi.os "linux" }}
 cur_shell=$(cat /etc/passwd | grep $USER | awk -F ":" '{print $NF}')
-tar_shell=$(is_callable zsh && echo zsh || echo bash)
+{{ else if eq .chezmoi.os "darwin" }}
+cur_shell=$(dscl . -read /Users/$USER UserShell | awk -F ": *" '{print $NF}')
+{{ else }}
+cur_shell=$SHELL
+{{ end }}
+tar_shell=$(command -v zsh >/dev/null && echo zsh || echo bash)
 if [ ! -x "${cur_shell}" ] || [[ ${cur_shell} != *"${tar_shell}"* ]]; then
-    step "Changing the login shell to ${tar_shell}..."
+    echo "Changing the login shell to ${tar_shell}..."
     sudo chsh $USER --shell="$(which ${tar_shell})"
 fi
 
-if ! is_callable xsh && [ -r ~/.config/xsh/xsh.sh ]; then
-    step "Bootstrapping xsh..."
-    source ~/.config/xsh/xsh.sh
-    xsh bootstrap --shells posix:bash:zsh
+if ! $(command -v xsh >/dev/null) && [ -r "$HOME/.config/xsh/xsh.sh" ]; then
+    echo "Bootstrapping xsh..."
+    source "$HOME/.config/xsh/xsh.sh"
+    xsh bootsrap -v --shells posix:bash:zsh
 fi
 
-trap bye EXIT
-
-{{ end -}}
+{{- end -}}

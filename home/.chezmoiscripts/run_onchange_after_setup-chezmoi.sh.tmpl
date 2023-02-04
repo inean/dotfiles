@@ -1,27 +1,18 @@
 #!/bin/bash
-# vim: filetype=bash
-#
-# Setup a linux-based system
-#
+
 {{- if eq .chezmoi.os "linux" "darwin" }}
-{{-   include ".helpers/common.sh" }}
 
-# ======
-# MAIN
-# ======
-msg "After: Setting up chezmoi"
+echo "After: Setting up chezmoi"
 
-if is_callable chezmoi; then
+if [ $(command -v chezmoi) ]; then
     if [ -d "${BASH_COMP_DIR}" ] && [ ! -f "${BASH_COMP_DIR}/chezmoi" ]; then
-        step "Installing chezmoi bash completions..."
+        echo "Installing chezmoi bash completions..."
         chezmoi completion bash | sudo tee ${BASH_COMP_DIR}/chezmoi > /dev/null
     fi
     if [ -d "${ZSH_COMP_DIR}" ] && [ ! -f "${ZSH_COMP_DIR}/_chezmoi" ]; then
-        step "Installing chezmoi zsh completions..."
+        echo "Installing chezmoi zsh completions..."
         chezmoi completion zsh | sudo tee ${ZSH_COMP_DIR}/_chezmoi > /dev/null
     fi
 fi
 
-trap bye EXIT
-
-{{ end -}}
+{{- end -}}

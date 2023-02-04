@@ -1,6 +1,6 @@
 #
 # This file is sourced automatically by xsh if the current shell has no
-# dedicated initialization file
+# dedicated initialization file.
 #
 # It should merely register the modules to be loaded for each runcom:
 # env, login, interactive and logout.
@@ -8,10 +8,4 @@
 # they will be loaded. Try `xsh help` for more information.
 #
 
-# Load core config
-xsh module core
-
-# Load application modules
-xsh module bat interactive
-xsh module fzf interactive
-xsh module trash interactive:logout
+xsh module core interactive:env:login

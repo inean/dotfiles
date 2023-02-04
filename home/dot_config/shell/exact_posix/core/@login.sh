@@ -21,14 +21,34 @@ path_prepend "${CARGO_HOME}/bin" PATH
 export BROWSER=elinks
 # Define the default web browser.
 if [ -n "$DISPLAY" ]; then
-  export BROWSER=firefox
+  if [ "$(command -v xdg-settings)" ]; then
+    browser="$(xdg-settings get default-web-browser)"
+    export BROWSER="$browser"
+  else # macOS
+    # set sanity default
+    export BROWSER=safari
+    # get the default browser
+    browser=$(defaults read ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure | awk -F'"' '/http;/{print window[(NR)-1]}{window[NR]=$2}')
+    # set the browser
+    if [ "$browser" = "com.apple.Safari" ]; then
+      export BROWSER=safari
+    elif [ "$browser" = "com.apple.SafariTechnologyPreview" ]; then
+      export BROWSER=safari-technology-preview
+    elif [ "$browser" = "com.google.Chrome" ]; then
+      export BROWSER=google-chrome
+    elif [ "$browser" = "com.google.Chrome.canary" ]; then
+      export BROWSER=google-chrome-canary
+    elif [ "$browser" = "com.apple.WebKit.WebContent" ]; then
+      export BROWSER=firefox
+    fi
+  fi
 fi
 
 # Editor
 # ======
 export EDITOR='vim'
 # Define the default editor.
-if is_callable code; then
+if [ "$(command -v code)" ]; then
   export EDITOR='code'
 fi
 export GIT_EDITOR="$EDITOR"
