@@ -6,7 +6,7 @@
 xsh load core -s posix
 
 # Reload the shell configuration without instant prompt to show output in real time.
-alias reload='POWERLEVEL9K_INSTANT_PROMPT=off exec zsh'
+alias reload='POWERLEVEL9K_INSTANT_PROMPT=off exec zsh -il'
 
 #
 # General
@@ -28,6 +28,12 @@ setopt rc_quotes            # allow 'henry''s garage' instead of 'henry'\''s gar
 setopt glob_dots     # include dotfiles in globbing
 setopt extended_glob # enable '#', '~', '^' operators and flags in patterns
 setopt brace_ccl     # allow brace character class list expansion
+
+# Global aliases
+alias -g G="| grep -i"
+alias -g H="| head"
+alias -g T="| tail"
+alias -g L="| less"
 
 # Disable globbing for specific commands.
 alias fc='noglob fc'
@@ -73,8 +79,7 @@ WATCHFMT=':: %n has %a %l from %(M:%M:localhost) at %T'
 # Modules (explicitly wanted)
 #
 
-[[ $COLORTERM == *(24bit|truecolor)* ]] \
-  || zmodload zsh/nearcolor # match 24-bit colors if unsupported
+[[ $COLORTERM == *(24bit|truecolor)* ]] || zmodload zsh/nearcolor # match 24-bit colors if unsupported
 zmodload zsh/parameter      # provide access to internal hash tables
 zmodload zsh/terminfo       # interface to the terminfo database
 zmodload zsh/zutil          # add some essential builtins, e.g. zstyle

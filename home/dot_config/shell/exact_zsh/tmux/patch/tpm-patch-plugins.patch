@@ -1,0 +1,39 @@
+diff --git c/scripts/install_plugins.sh i/scripts/install_plugins.sh
+index e2450ac..18cd066 100755
+--- c/scripts/install_plugins.sh
++++ i/scripts/install_plugins.sh
+@@ -34,6 +34,19 @@ clone_plugin() {
+ 		clone "https://git::@github.com/$plugin" "$branch"
+ }
+ 
++# patch the damn plugins
++patch_plugin() {
++	local plugin_name="$1"
++	local plugin_dir="$(tpm_path)/$plugin_name"
++	local patch="$TMUX_PLUGIN_MANAGER_PATCH_DIR/$plugin_name.patch"
++
++	if [[ "$TMUX_PLUGIN_MANAGER_PATCH_DIR" && -f "$patch" ]]; then
++		patch -d "$plugin_dir" -p1 -r- -suN <"$patch" |& grep -q 'FAILED' &&
++			echo_err "  \"$plugin_name\" patch failed" ||
++			echo_ok "  \"$plugin_name\" patch success"
++	fi
++}
++
+ # clone plugin and produce output
+ install_plugin() {
+ 	local plugin="$1"
+@@ -44,9 +57,12 @@ install_plugin() {
+ 		echo_ok "Already installed \"$plugin_name\""
+ 	else
+ 		echo_ok "Installing \"$plugin_name\""
+-		clone_plugin "$plugin" "$branch" &&
+-			echo_ok "  \"$plugin_name\" download success" ||
++		if clone_plugin "$plugin" "$branch"; then
++			echo_ok "  \"$plugin_name\" download success"
++			patch_plugin "$plugin_name"
++		else
+ 			echo_err "  \"$plugin_name\" download fail"
++		fi
+ 	fi
+ }
+ 

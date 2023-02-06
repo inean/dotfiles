@@ -1,11 +1,46 @@
 #
-# starisho configuration module
+# Prompt configuration module for zsh.
 #
 
-# Abort if requirements aren't met
-if ! $(command -v starship); then
-    return 1
+# Basic prompt theme.
+theme='redhat'
+
+# Use powerlevel10k if available.
+if (( $+functions[zi] )); then
+  # Enable Powerlevel10k instant prompt. Should run early during interactive shell setup.
+  # Initialization code that may require console input (password prompts, [y/n]
+  # confirmations, etc.) must run before this block; everything else may run after.
+  if [[ $+ZSH_PROF == 0 && -r "$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+
+  zi light-mode for id-as'plugin/powerlevel10k' \
+    depth=1 pick'/dev/null'                     \
+    @romkatv/powerlevel10k
+  zi add-fpath --front plugin/powerlevel10k
+
+  theme='powerlevel10k'
 fi
 
-# Startup zoxide
-eval "$(starship init zsh)"
+# Disable prompt theme in dumb terminals.
+if [[ $TERM == 'dumb' ]]; then
+  theme='off'
+fi
+
+# Load and execute the prompt theming system.
+autoload -Uz promptinit && promptinit
+
+# Load the selected theme.
+prompt $theme
+
+# Load the p10k configuration according to the capabilities of the terminal.
+# To create a new configuration, run `p10k configure`.
+if [[ $theme == 'powerlevel10k' ]]; then
+  (( $terminfo[colors] >= 256 )) && source $XDG_CONFIG_HOME/powerlevel10k/.p10k.zsh
+  # Additional customizations.
+  POWERLEVEL9K_VCS_DISABLED_WORKDIR_PATTERN='~|/run/media/*'
+  # prompt functions are loaded - cleanup fpath
+  fpath[1]=() 
+fi
+
+unset theme

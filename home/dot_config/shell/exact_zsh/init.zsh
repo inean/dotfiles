@@ -11,14 +11,17 @@
 #   ZSH_PROF='' zsh -ic zprof
 (( $+ZSH_PROF )) && zmodload zsh/zprof
 
+# Setup the terminal first.
+xsh module term interactive
+
 # Install and load the zi plugin manager.
 xsh module zi interactive
 
-# Load the tmux module first in case autostart is enabled.
-xsh module tmux interactive:login
-
 # Load the prompt module next to enable powerlevel10k instant prompt.
 xsh module prompt interactive
+
+# Load the tmux module first in case autostart is enabled.
+xsh module tmux interactive:login
 
 # Load the core modules to set shell options early and provide core aliases.
 xsh module core      interactive:env:login
@@ -37,7 +40,7 @@ xsh module restic     interactive
 xsh module ripgrep    interactive
 xsh module trash      interactive:logout
 xsh module unison     interactive:login
-xsh module yadm       interactive # load before git
+xsh module vim        interactive:login
 xsh module youtube-dl interactive
 
 # Load the completion system and define core ZLE widgets and bindings.
@@ -62,6 +65,5 @@ xsh module history-substring-search interactive
 xsh module autosuggestion           interactive
 
 # Finally, load welcoming and safeguard modules.
-xsh module fortune interactive:logout
 xsh module zopt    interactive
 xsh module zkey    interactive

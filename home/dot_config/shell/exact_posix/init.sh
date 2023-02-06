@@ -8,4 +8,4 @@
 # they will be loaded. Try `xsh help` for more information.
 #
 
-xsh module core interactive:env:login
+xsh module core

@@ -25,16 +25,10 @@ alias gnp="git --no-pager"    # git with no pager
 # If inside a github repo, open the repo in the browser
 alias gho="git remote -v | grep fetch | grep -oE 'https://github.com/\S+' | xargs -I{} open {}"
 
-# Global aliases
-alias -g G="| grep -i"
-alias -g H="| head"
-alias -g T="| tail"
-alias -g L="| less"
-
 # List declared aliases, functions, paths
 alias aliases="alias | sed 's/=.*//'"
 alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
-alias paths='echo -e ${PATH//:/\\n}'
+alias paths='echo ${PATH//:/\\n}'
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -48,7 +42,7 @@ else # macOS `ls`
   groupflag=""
 fi
 alias ls="command ls $colorflag"          # Always use color output for `ls`
-alias l="ls -lhAF $colorflag $groupflag"  # List all files colorized in long format, excluding . and ..
+alias la="ls -lhAF $colorflag $groupflag"  # List all files colorized in long format, excluding . and ..
 alias lt="ls -lhAFtr $colorflag $groupflag" # List all files colorized in long format, excluding . and .. in traversal order
 alias lsd="ls -ld $colorflag */"
 
@@ -95,7 +89,7 @@ alias http-serve='python3 -m http.server' # Serve a directory via HTTP.
 alias o='open'
 alias config='chezmoi'
 
-{{- if eq .chezmoi.os "darwin" -}}
+{{- if eq .chezmoi.os "darwin" }}
 
 # Recursively delete `.DS_Store` files
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
@@ -120,4 +114,4 @@ alias logoff="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resou
 # Quick Look files in Finder
 alias ql="qlmanage -p &>/dev/null"
 
-{{- end -}}
+{{ end }}

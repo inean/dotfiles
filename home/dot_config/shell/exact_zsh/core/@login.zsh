@@ -51,7 +51,7 @@ export PSQLRC="$XDG_CONFIG_HOME/psql/psqlrc"
 export WGETRC="$XDG_CONFIG_HOME/wget/config"
 
 # XDG_DATA_HOME environment overrides.
-# export GNUPGHOME="$XDG_DATA_HOME/gnupg" # NOTE: Does not really work for all programs
+export GNUPGHOME="$XDG_DATA_HOME/gnupg" # NOTE: Does not really work for all programs
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export SSB_HOME="$XDG_DATA_HOME/zoom"
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"

@@ -56,13 +56,8 @@ path_append () {
 {{- $paths := list }}
 {{- $homeDir := .chezmoi.homeDir }}
 {{- range $_, $relPath := list "bin" "go/bin" ".cargo/bin" ".local/bin" }}
-{{    $path := joinPath $homeDir $relPath }}
-{{-   if stat $path }}
-{{-     $paths = mustAppend $paths $path }}
-{{-   end }}
-{{- end }}
-{{- if $paths }}
-export PATH={{ toStrings $paths | join ":" }}:$PATH
+{{-    $path := joinPath $homeDir $relPath }}
+        path_prepend $path PATH
 {{- end }}
 
 # Explicitly set XDG base dirs as they are needed later
