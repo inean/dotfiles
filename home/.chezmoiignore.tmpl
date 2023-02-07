@@ -1,11 +1,5 @@
 # General
-.devcontainer.json
-.helpers
-.github
-.vscode
-install.sh
-README.md
-UNLICENSE
+.config/chezmoi/.chezmoisecret.age
 
 {{ if ne .chezmoi.os "darwin" }}
 .chezmoiscripts/darwin/**
@@ -13,7 +7,10 @@ UNLICENSE
 
 {{ if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
+.local/share/fonts
 {{ end }}
 
 {{ if not .personal }}
+.config/gnupg
+.ssh
 {{ end }}

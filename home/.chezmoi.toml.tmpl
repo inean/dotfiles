@@ -65,6 +65,13 @@
 {{-   end -}}
 {{- end -}}
 
+{{- if $personal }}
+encryption = "age"
+[age]
+    identity = "~/.config/chezmoi/.chezmoisecret"
+    recipient = "age1fzh7f38c46er0xz5xevc3ga8ya8lwv6gh4s5d662vht07uv9sg4sgm8cs5"
+{{- end }}
+
 [data]
     email = {{ $email | quote }}
     ephemeral = {{ $ephemeral }}

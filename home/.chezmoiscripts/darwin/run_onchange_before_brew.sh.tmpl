@@ -1,33 +1,32 @@
-{{- if eq .chezmoi.os "darwin" -}}
-
-{{- end -}}
-{{/* # Core packages */}}
+{{- /* # Boostrap packages */ -}}
 {{- $brews := list
+     "curl"
+     "git" -}}
+{{- $casks := list -}}
+
+{{- /* # Core packages */ -}}
+{{- $brews = concat $brews (list
      "bash"
      "bash-completion@2"
      "coreutils"
-     "curl"
      "findutils"
      "gnu-sed"
-     "git"
-     "jq" -}}
-
-{{- $casks := list -}}
-
-{{/* # Docker packages */}}
+     "jq") -}}
+     
+{{- /* # Docker packages */ -}}
 {{- if .docker -}}
   {{ $brews = concat $brews (list
      "podman"
      "podman-compose") -}}
 
-  {{ if and (eq .chezmoi.arch "amd64") (not .headless) -}}
-    {{ $casks = concat $casks (list
+  {{- if and (eq .chezmoi.arch "amd64") (not .headless) -}}
+    {{- $casks = concat $casks (list
       "podman-desktop") -}}
   {{- end -}}
 
 {{- end -}}
 
-{{/* # GUI core packages */}}
+{{- /* # GUI core packages */ -}}
 {{- if not .headless -}}
   {{ $casks := concat $casks (list
      "firefox"
@@ -36,8 +35,8 @@
      "visual-studio-code") -}}
 {{- end -}}
 
-{{ if or (not .headless) (not .ephimeral) -}}
-  {{ $brews = concat $brews (list
+{{- if or (not .headless) (not .ephimeral) -}}
+  {{- $brews = concat $brews (list
      "bat"
      "exa"
      "ffmpeg"
@@ -51,12 +50,12 @@
      "wget"
      "xz"
      "yt-dlp") -}}
-  {{ if eq .chezmoi.arch "amd64" -}}
-    {{ $brews = concat $brews (list
+  {{- if eq .chezmoi.arch "amd64" -}}
+    {{- $brews = concat $brews (list
        "shellcheck") -}}
-  {{ end -}}
+  {{- end -}}
 
-  {{ $casks = concat $casks (list
+  {{- $casks = concat $casks (list
      "balenaetcher"
      "gns3"
      "spotify"
@@ -66,20 +65,21 @@
      "vlc"
      "whatsapp"
   ) -}}
-  {{ if and (eq .chezmoi.os "darwin") (le "12" (substr 7 9 .osid)) -}}
-    {{ $casks = concat $casks (list
+  {{- if and (eq .chezmoi.os "darwin") (le "12" (substr 7 9 .osid)) -}}
+    {{- $casks = concat $casks (list
        "vagrant-vmware-utility"
        "vmware-fusion"
        ) -}}
-  {{ end -}}
+  {{- end -}}
 
   {{ if .personal -}}
-  {{ $brews = concat $brews (list
+  {{- $brews = concat $brews (list
+     "age"
      "gopass"
      "gnupg"
      "vault"
      ) -}}
-  {{ end }}
+  {{- end -}}
 {{- end -}}
 
 #!/bin/bash
@@ -118,10 +118,10 @@ EOF
 
 # Now upgrade any already-installed formulae.
 brew upgrade
-
+# And finally cleanup all this
 brew cleanup
 
-{{ if .personal }}
+{{ if .personal -}}
 # Save Homebrew’s installed location.
 BREW_PREFIX=$(brew --prefix)
 
@@ -129,4 +129,4 @@ BREW_PREFIX=$(brew --prefix)
 if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
   echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
 fi;
-{{ end }}
+{{- end -}}
