@@ -1,0 +1,21 @@
+{ 
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": "true",
+			"username": "vscode",
+			"userUid": "1000",
+			"userGid": "1000",
+			"upgradePackages": "true"
+		},
+        "ghcr.io/devcontainers-contrib/features/curl-apt-get:1": {
+        }
+    },
+    "runArgs": [
+        "--userns=keep-id:uid=1000,gid=1000"
+    ],
+    "containerUser": "vscode"
+}
