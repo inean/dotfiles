@@ -15,6 +15,24 @@
 {{-     $fontDir = ".local/share/fonts" }}
 {{-   end }}
 
+# Terminal Themes 
+# See https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/schemes for more options
+{{-   if eq .chezmoi.os "darwin" }}
+{{-   range (list
+        "Atom"
+        "Github"
+        "GitHub Dark") }}
+[".config/themes/{{ . }}/terminal/{{ . }}.terminal"]
+    type="file"
+    url="https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/terminal/{{ . }}.terminal"
+    refreshPeriod = "168h"
+[".config/themes/{{ . }}/iterm2/{{ . }}.itermcolors"]
+    type="file"
+    url="https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/{{ . }}.itermcolors"
+    refreshPeriod = "168h"
+{{-   end }}
+{{-   end }}
+
 # Install MesloLGS fonts
 {{-   range (list
         "MesloLGS NF Regular.ttf"
@@ -39,6 +57,7 @@
 
 {{- end }}
 
+# Zsh Plugins
 [".cache/zsh/plugins/alias-tips"]
     type = "archive"
     url = "https://github.com/Crandel/alias-tips/archive/master.tar.gz"
