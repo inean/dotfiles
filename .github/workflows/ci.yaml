@@ -10,6 +10,12 @@ jobs:
         os: ["ubuntu-latest", "macos-latest"]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Remove all crap from VMs
+        run: |
+          set -x
+          brew remove --cask --force $(brew list)
+          brew remove --force $(brew list --formula)
+        if: startsWith(matrix.os, 'macos')
       - name: Install bootstrap dependences on MacOS
         run: |
           set -x
