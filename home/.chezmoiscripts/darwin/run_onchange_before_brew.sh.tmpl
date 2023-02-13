@@ -34,7 +34,7 @@
      "visual-studio-code") -}}
 {{- end -}}
 
-{{- if or (not .headless) (not .ephimeral) -}}
+{{- if or (not .headless) (not .ephemeral) -}}
   {{- $brews = concat $brews (list
      "bat"
      "exa"
