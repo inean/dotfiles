@@ -11,25 +11,31 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Remove all crap from VMs
-        run: |
-          set -x
-          brew remove --cask --force $(brew list)
+        run: >-
+          set -x;
+          brew remove --cask --force $(brew list);
           brew remove --force $(brew list --formula)
         if: startsWith(matrix.os, 'macos')
       - name: Install bootstrap dependences on MacOS
-        run: |
-          set -x
+        run: >-
+          set -x;
           brew install curl
         if: startsWith(matrix.os, 'macos')
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
+        with: { fetch-depth: 1}
       - name: Install Chezmoi and apply dotfiles
-        run: |
-          set -x
+        run: >-
+          set -x;
           ./install.sh
-      - name: Test dotfiles are installed properly
-        run: |
-          set -x
+      - name: Test BASH environment sanity
+        run: >-
+          set -x;
           chezmoi data
+        if: startsWith(matrix.os, 'ubuntu')
+        shell: bash -e {0}
+      - name: Test ZSH environment sanity
+        run: >-
+          set -x;
+          chezmoi data
+        shell: zsh -e {0}
+        if: startsWith(matrix.os, 'macos')
