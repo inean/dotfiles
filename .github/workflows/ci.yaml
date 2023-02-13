@@ -36,6 +36,7 @@ jobs:
       - name: Test ZSH environment sanity
         run: >-
           set -x;
+          env;
           chezmoi data
         shell: zsh -e {0}
         if: startsWith(matrix.os, 'macos')

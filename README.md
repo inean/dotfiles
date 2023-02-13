@@ -1,7 +1,7 @@
 # Dotfiles
 
 ![Platform](https://img.shields.io/badge/platform-macos%20%7C%20linux-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+[![License: Unlicense](https://img.shields.io/github/license/inean/dotfiles)](http://unlicense.org/)
 [![Dorfiles](https://github.com/inean/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/inean/dotfiles/actions/workflows/ci.yaml)
 
 Personal dotfiles repository, managed and applied with [chezmoi](https://chezmoi.io/).
