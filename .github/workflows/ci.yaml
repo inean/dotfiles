@@ -10,19 +10,20 @@ jobs:
         os: ["ubuntu-latest", "macos-latest"]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Remove all crap from VMs
+      - name: Remove all crap from MacOS
         run: >-
           set -x;
           brew remove --cask --force $(brew list);
-          brew remove --force $(brew list --formula)
-        if: startsWith(matrix.os, 'macos')
-      - name: Install bootstrap dependences on MacOS
-        run: >-
-          set -x;
+          brew remove --force $(brew list --formula);
           brew install curl
         if: startsWith(matrix.os, 'macos')
       - uses: actions/checkout@v3
         with: { fetch-depth: 1}
+      - name: Install ZSH on Linux
+        run: >-
+          sudo apt-get update;
+          sudo apt-get install zsh
+        if: runner.os == 'Linux'
       - name: Install Chezmoi and apply dotfiles
         run: >-
           set -x;
@@ -38,5 +39,5 @@ jobs:
           set -x;
           env;
           chezmoi data
-        shell: zsh -e {0}
+        shell: zsh -il -e {0}
         if: startsWith(matrix.os, 'macos')
