@@ -2,6 +2,7 @@
 
 ![Platform](https://img.shields.io/badge/platform-macos%20%7C%20linux-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Dotfiles](https://github.com/inean/dotfiles/actions/workflows/ci.yml/badge.svg)
 
 Personal dotfiles repository, managed and applied with [chezmoi](https://chezmoi.io/).
 
