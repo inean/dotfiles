@@ -1,18 +1,28 @@
 name: ci
 
-on:
-  push:
-  pull_request:
+on: [ push, pull_request]
 
 jobs:
   clone-and-install:
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/vscode/devcontainers/base:ubuntu
-      env:
-        CODESPACES: true
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest"]
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - run: ./install.sh
-      - name: chezmoi data
-        run: '"$HOME/.local/bin/chezmoi" data'
+      - name: Install bootstrap dependences on MacOS
+        run: |
+          set -x
+          brew install curl
+        if: startsWith(matrix.os, 'macos')
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Install Chezmoi and apply dotfiles
+        run: |
+          set -x
+          ./install.sh
+      - name: Test dotfiles are installed properly
+        run: |
+          '"$HOME/.local/bin/chezmoi" data'
