@@ -31,4 +31,5 @@ jobs:
           ./install.sh
       - name: Test dotfiles are installed properly
         run: |
-          '"$HOME/.local/bin/chezmoi" data'
+          set -x
+          chezmoi data
