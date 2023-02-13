@@ -25,7 +25,7 @@ fi
 if ! $(command -v xsh >/dev/null) && [ -r "$HOME/.config/xsh/xsh.sh" ]; then
     echo "Bootstrapping xsh..."
     source "$HOME/.config/xsh/xsh.sh"
-    xsh bootsrap -v --shells posix:bash:zsh
+    xsh bootstrap -v --shells posix:bash:zsh
 fi
 
 {{- end -}}
