@@ -16,10 +16,11 @@ cur_shell=$(dscl . -read /Users/$USER UserShell | awk -F ": *" '{print $NF}')
 {{ else }}
 cur_shell=$SHELL
 {{ end }}
+
 tar_shell=$(command -v zsh >/dev/null && echo zsh || echo bash)
 if [ ! -x "${cur_shell}" ] || [[ ${cur_shell} != *"${tar_shell}"* ]]; then
     echo "Changing the login shell to ${tar_shell}..."
-    sudo chsh $USER --shell="$(which ${tar_shell})"
+    sudo chsh -s "$(which ${tar_shell})" $USER
 fi
 
 if ! $(command -v xsh >/dev/null) && [ -r "$HOME/.config/xsh/xsh.sh" ]; then
