@@ -6,6 +6,7 @@
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
 
+{{ if .personal }}
 # Ask for the administrator password upfront
 sudo -v
 
@@ -775,3 +776,5 @@ for app in "Activity Monitor" \
 	killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
+
+{{ end }}
