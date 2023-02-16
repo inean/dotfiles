@@ -11,9 +11,6 @@
 #   ZSH_PROF='' zsh -ic zprof
 (( $+ZSH_PROF )) && zmodload zsh/zprof
 
-# Setup the terminal first.
-xsh module term interactive
-
 # Install and load the zi plugin manager.
 xsh module zi interactive
 
