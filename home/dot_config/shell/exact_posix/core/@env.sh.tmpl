@@ -81,10 +81,16 @@ export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 
-# editor
+# brew
 {{- if eq .chezmoi.os "darwin" }}
 export HOMEBREW_NO_AUTO_UPDATE=1
+{{ if eq .chezmoi.arch "arm64" }}
+  path_prepend "/opt/homebrew/bin"
+  path_prepend "/opt/homebrew/sbin"
+{{ end }}
 {{- end -}}
+
+# locale
 export LANG=es_ES.UTF-8
 export LC_ALL=es_ES.UTF-8
 

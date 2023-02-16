@@ -23,6 +23,12 @@ if [ ! -x "${cur_shell}" ] || [[ ${cur_shell} != *"${tar_shell}"* ]]; then
     sudo chsh -s "$(which ${tar_shell})" $USER
 fi
 
+
+# xsh requires gln to link properly, but on m1 it's located on homebrew...
+{{ if and (eq .chezmoi.os "darwin") ( eq .chezmoi.arch "arm64" ) }}
+    export PATH="/opt/homebrew/bin:$PATH"
+{{ end }}
+
 if ! $(command -v xsh >/dev/null) && [ -r "$HOME/.config/xsh/xsh.sh" ]; then
     echo "Bootstrapping xsh..."
     source "$HOME/.config/xsh/xsh.sh"

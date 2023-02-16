@@ -60,11 +60,12 @@
      "spotify"
      "telegram"
      "transmission"
+     "unnaturalscrollwheels"
      "vagrant"
      "vlc"
      "whatsapp"
   ) -}}
-  {{- if and (eq .chezmoi.os "darwin") (le "12" (substr 7 9 .osid)) -}}
+  {{- if and (eq .chezmoi.os "darwin") (le "14" (substr 7 9 .osid)) -}}
     {{- $casks = concat $casks (list
        "vagrant-vmware-utility"
        "vmware-fusion"
@@ -89,14 +90,22 @@ set -eufo pipefail
 if [ ! -x "$(command -v brew)" ]; then
    brew_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
    if [ "$(command -v curl)" ]; then
-    sh -c "$(curl -fsSL $brew_url)"
+    /bin/bash -c "$(curl -fsSL $brew_url)"
   elif [ "$(command -v wget)" ]; then
-    sh -c "$(wget -qO- $brew_url)"
+    /bin/bash -c "$(wget -qO- $brew_url)"
   else
     echo "To install Homebrew, you must have curl or wget installed." >&2
     exit 1
   fi
+  # Ensure brew could be find
 fi
+
+# Export homebrew environment 
+{{ if eq .chezmoi.arch "amd64" }}
+  eval $(/usr/local/bin/brew shellenv)
+{{ else }}
+  eval $(/opt/homebrew/bin/brew shellenv)
+{{ end }}
 
 # Make sure we’re using the latest Homebrew.
 brew update
