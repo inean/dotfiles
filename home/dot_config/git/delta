@@ -12,8 +12,6 @@
 
 [delta]
   features = truecolor
-  syntax-theme = base16
-  max-line-length = 4096
   tabs = 2
 
 [delta "truecolor"]

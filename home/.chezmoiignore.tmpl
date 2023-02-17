@@ -10,7 +10,7 @@
 .local/share/fonts
 {{ end }}
 
-{{ if not .personal }}
+{{ if not .core.personal }}
 .config/gnupg
 .ssh
 {{ end }}

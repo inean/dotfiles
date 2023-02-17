@@ -1,24 +1,31 @@
 {{- /* # Boostrap packages */ -}}
 {{- $brews := list
-     "curl" -}}
+    "curl" -}}
 {{- $casks := list -}}
 
 {{- /* # Core packages */ -}}
 {{- $brews = concat $brews (list
-     "bash"
-     "bash-completion@2"
-     "coreutils"
-     "findutils"
-     "gnu-sed"
-     "jq") -}}
-     
-{{- /* # Docker packages */ -}}
-{{- if .docker -}}
-  {{ $brews = concat $brews (list
-     "podman"
-     "podman-compose") -}}
+    "bash"
+    "bash-completion@2"
+    "coreutils"
+    "findutils"
+    "gnu-sed"
+    "jq") -}}
 
-  {{- if and (eq .chezmoi.arch "amd64") (not .headless) -}}
+{{ if .core.coding }}
+  {{- $brews = concat $brews (list
+    "gh"
+    "git-delta"
+    "git-lfs" ) -}}
+{{- end -}}
+
+{{- /* # Docker packages */ -}}
+{{- if .core.docker -}}
+  {{ $brews = concat $brews (list
+    "podman"
+    "podman-compose") -}}
+
+  {{- if and (eq .chezmoi.arch "amd64") (not .core.headless) -}}
     {{- $casks = concat $casks (list
       "podman-desktop") -}}
   {{- end -}}
@@ -26,7 +33,7 @@
 {{- end -}}
 
 {{- /* # GUI core packages */ -}}
-{{- if not .headless -}}
+{{- if not .core.headless -}}
   {{ $casks := concat $casks (list
      "firefox"
      "google-chrome"
@@ -34,14 +41,12 @@
      "visual-studio-code") -}}
 {{- end -}}
 
-{{- if or (not .headless) (not .ephemeral) -}}
+{{- if or (not .core.headless) (not .core.ephemeral) -}}
   {{- $brews = concat $brews (list
      "bat"
      "exa"
      "ffmpeg"
      "fzf"
-     "gh"
-     "git-lfs"
      "pinentry-mac"
      "ripgrep"
      "ssh-copy-id"
@@ -72,7 +77,7 @@
        ) -}}
   {{- end -}}
 
-  {{ if .personal -}}
+  {{ if .core.personal -}}
   {{- $brews = concat $brews (list
      "age"
      "gopass"
@@ -100,7 +105,7 @@ if [ ! -x "$(command -v brew)" ]; then
   # Ensure brew could be find
 fi
 
-# Export homebrew environment 
+# Export homebrew environment
 {{ if eq .chezmoi.arch "amd64" }}
   eval $(/usr/local/bin/brew shellenv)
 {{ else }}
@@ -129,7 +134,7 @@ brew upgrade
 # And finally cleanup all this
 brew cleanup
 
-{{ if .personal -}}
+{{ if .core.personal -}}
 # Save Homebrew’s installed location.
 BREW_PREFIX=$(brew --prefix)
 

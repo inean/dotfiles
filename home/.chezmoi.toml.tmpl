@@ -1,9 +1,16 @@
 {{/* boolean feature tags */}}
-{{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
+{{- $coding    := false -}}{{/* true if this machine should have developer tools */}}
+{{- $docker    := false -}}{{/* true if this machine should have Docker installed */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
-{{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
-{{- $is_wsl := false -}}{{/* true if this is a WSL linux machine */}}
-{{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
+{{- $headless  := false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $personal  := false -}}{{/* true if this machine should have personal secrets */}}
+{{- "" -}}
+
+{{/* Developer flavors */}}
+{{- $go     := false -}}
+{{- $rust   := false -}}
+{{- $shell  := false -}}
+{{- $python := false -}}
 {{- "" -}}
 
 {{/* os short name */}}
@@ -12,7 +19,7 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
-{{/* detect MacOS verson */}}
+{{/* detect MacOS version */}}
 {{- if eq .chezmoi.os "darwin" -}}
     {{ $macos_version := output "sw_vers" "-productVersion" | trim }}
     {{- if ne $macos_version "" -}}
@@ -21,6 +28,7 @@
 {{- end -}}
 
 {{/* detect WSL */}}
+{{- $is_wsl := false -}}{{/* true if this is a WSL linux machine */}}
 {{- if eq .chezmoi.os "linux" -}}
 {{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
 {{-     $headless = true -}}
@@ -34,31 +42,36 @@
 {{-   $headless = true -}}
 {{- end -}}
 
-{{/* prompt input */}}
+{{/* prompt email */}}
 {{- $email := "" -}}
 {{- if stdinIsATTY -}}
-{{-     if hasKey . "email" -}}
-{{-         $email = .email -}}
-{{-     else -}}
-{{-         $email = promptString "email" -}}
-{{-     end -}}
+{{-   if hasKey . "email" -}}
+{{-     $email = .email -}}
+{{-   else -}}
+{{-     $email = promptString "email" -}}
+{{-   end -}}
 {{- end -}}
-{{- if not $ephemeral -}}
-{{-   if eq .chezmoi.hostname "MacBook-Pro-2022" -}}
-{{-     $docker = true -}}
-{{-     $personal = true -}}
-{{-   else if eq .chezmoi.hostname "mbp2013" -}}
-{{-     $docker = true -}}
-{{-     $personal = true -}}
-{{-   else if eq .chezmoi.hostname "raspberrypi" -}}
-{{-     $headless = true -}}
-{{-     $personal = true -}}
-{{-   else if stdinIsATTY -}}
-{{-     $headless = promptBoolOnce . "headless" "headless" -}}
+
+{{/* Default config for our machines */}}
+{{- if eq .chezmoi.hostname "MacBook-Pro-2022" -}}
+{{-   $docker   = true -}}
+{{-   $personal = true -}}
+{{-   $coding   = true -}}
+
+{{- else if eq .chezmoi.hostname "mbp2013" -}}
+{{-   $docker   = true -}}
+{{-   $personal = true -}}
+{{-   $coding   = true -}}
+
+{{- else if eq .chezmoi.hostname "raspberrypi" -}}
+{{-   $headless = true -}}
+{{-   $personal = true -}}
+
+{{- else if not $ephemeral -}}
+{{-   if stdinIsATTY -}}
+{{-     $headless  = promptBoolOnce . "headless" "headless" -}}
 {{-     $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" -}}
-{{-     if not $ephemeral -}}
-{{-       $docker = promptBoolOnce . "docker" "docker" -}}
-{{-     end -}}
+{{-     $docker  = promptBoolOnce . "docker" "docker" -}}
 {{-   else -}}
 {{-     $ephemeral = true -}}
 {{-     $headless = true -}}
@@ -74,9 +87,16 @@ encryption = "age"
 
 [data]
     email = {{ $email | quote }}
-    ephemeral = {{ $ephemeral }}
-    docker = {{ $docker }}
-    headless = {{ $headless }}
     hostname = {{ .chezmoi.hostname | quote }}
-    personal = {{ $personal }}
     osid = {{ $osid | quote }}
+
+    core.ephemeral = {{ $ephemeral }}
+    core.coding = {{ $coding }}
+    core.docker = {{ $docker }}
+    core.headless = {{ $headless }}
+    core.personal = {{ $personal }}
+
+    flavors.go = {{ $go }}
+    flavors.python = {{ $python }}
+    flavors.rust = {{ $rust }}
+    flavors.shell = {{ $shell }}

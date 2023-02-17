@@ -92,7 +92,7 @@
 	# Automatically correct and execute mistyped commands.
 	autocorrect = 1
 
-{{ if .personal -}}
+{{ if .core.personal -}}
 [http]
 
 	# Where to store cookie files
@@ -140,7 +140,7 @@
 
 # URL shorthands
 
-{{- if .personal }}
+{{- if .core.personal }}
 [url "git@github.com:inean/"]
 	insteadOf = https://github.com/inean/
 [url "git@github.com:artecoids/"]

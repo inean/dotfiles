@@ -1,6 +1,6 @@
 {{- $extensions := list -}}
 
-{{- if .ephemeral -}}
+{{- if .core.ephemeral -}}
 {{- $extensions = concat $extensions (list
      "stkb.rewrap"
      "ms-python.python"
@@ -9,7 +9,7 @@
 -}}
 {{- end -}}
 
-{{- if .personal -}}
+{{- if .core.personal -}}
 {{- $extensions = concat $extensions (list
      "bungcip.better-toml"
      "DavidAnson.vscode-markdownlint"
