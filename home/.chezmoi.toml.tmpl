@@ -7,10 +7,11 @@
 {{- "" -}}
 
 {{/* Developer flavors */}}
-{{- $go     := false -}}
-{{- $rust   := false -}}
-{{- $shell  := false -}}
-{{- $python := false -}}
+{{- $go      := false -}}
+{{- $rust    := false -}}
+{{- $shell   := false -}}
+{{- $python  := false -}}
+{{- $android := false -}}
 {{- "" -}}
 
 {{/* os short name */}}
@@ -100,3 +101,4 @@ encryption = "age"
     flavors.python = {{ $python }}
     flavors.rust = {{ $rust }}
     flavors.shell = {{ $shell }}
+    flavors.android = {{ $android }}

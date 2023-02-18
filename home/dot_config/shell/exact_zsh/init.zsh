@@ -14,16 +14,17 @@
 # Install and load the zi plugin manager.
 xsh module zi interactive
 
+# Load the core modules to set shell options early and provide core aliases.
+xsh module core interactive:env:login
+xsh module directory interactive
+xsh module history interactive
+
 # Load the prompt module next to enable powerlevel10k instant prompt.
-xsh module prompt interactive
+xsh module prompt     interactive
 
 # Load the tmux module first in case autostart is enabled.
-xsh module tmux interactive:login
+xsh module tmux       interactive:login
 
-# Load the core modules to set shell options early and provide core aliases.
-xsh module core      interactive:env:login
-xsh module directory interactive
-xsh module history   interactive
 
 # Load application-specific modules that have no specific requirements.
 xsh module archive    interactive

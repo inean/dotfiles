@@ -3,10 +3,7 @@
 #
 
 # Load the core posix module.
-xsh load core -s posix
-
-# Reload the shell configuration without instant prompt to show output in real time.
-alias reload='POWERLEVEL9K_INSTANT_PROMPT=off exec zsh -il'
+xsh load core -s posix interactive
 
 #
 # General
@@ -145,10 +142,6 @@ fi
 if (( $+commands[espeak-ng] )); then
   alias speak-en='speak-ng -v gmw/en-US'
   alias speak-fr='speak-ng -v roa/fr'
-fi
-
-if [[ -d $XDG_PROJECTS_DIR/env/util/xdg-ninja ]]; then
-  alias xdg-ninja='$XDG_PROJECTS_DIR/env/util/xdg-ninja/xdg-ninja.sh'
 fi
 
 #

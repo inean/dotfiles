@@ -40,7 +40,10 @@ if [[ $theme == 'powerlevel10k' ]]; then
   # Additional customizations.
   POWERLEVEL9K_VCS_DISABLED_WORKDIR_PATTERN='~|/run/media/*'
   # prompt functions are loaded - cleanup fpath
-  fpath[1]=() 
+  fpath[1]=()
 fi
 
 unset theme
+
+# Reload the shell configuration without instant prompt to show output in real time.
+alias reload='POWERLEVEL9K_INSTANT_PROMPT=off exec zsh -il'
