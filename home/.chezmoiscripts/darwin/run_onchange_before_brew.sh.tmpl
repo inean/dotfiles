@@ -10,13 +10,21 @@
     "coreutils"
     "findutils"
     "gnu-sed"
-    "jq") -}}
+    "jq"
+    ) -}}
 
+{{- /* #General Dev packages */ -}}
 {{ if .core.coding }}
   {{- $brews = concat $brews (list
     "gh"
+    "git-extras"
     "git-delta"
-    "git-lfs" ) -}}
+    "git-lfs"
+    "httpie"
+    "tealdeer"
+    "tmux"
+    "tmux-xpanes"
+    ) -}}
 {{- end -}}
 
 {{- /* # Docker packages */ -}}
@@ -34,11 +42,12 @@
 
 {{- /* # GUI core packages */ -}}
 {{- if not .core.headless -}}
-  {{ $casks := concat $casks (list
-     "firefox"
-     "google-chrome"
-     "iterm2"
-     "visual-studio-code") -}}
+  {{- $casks = concat $casks (list
+    "firefox"
+    "google-chrome"
+    "iterm2"
+    "visual-studio-code"
+    ) -}}
 {{- end -}}
 
 {{- if or (not .core.headless) (not .core.ephemeral) -}}
@@ -47,31 +56,30 @@
      "exa"
      "ffmpeg"
      "fzf"
-     "pinentry-mac"
      "ripgrep"
-     "ssh-copy-id"
-     "tmux"
      "wget"
      "xz"
-     "yt-dlp") -}}
-  {{- if eq .chezmoi.arch "amd64" -}}
+     "ssh-copy-id"
+     "yt-dlp"
+     ) -}}
+     {{- if eq .chezmoi.arch "amd64" -}}
     {{- $brews = concat $brews (list
-       "shellcheck") -}}
-  {{- end -}}
+      "shellcheck") -}}
+      {{- end -}}
 
-  {{- $casks = concat $casks (list
-     "balenaetcher"
-     "gns3"
-     "spotify"
-     "telegram"
-     "transmission"
-     "unnaturalscrollwheels"
-     "vagrant"
-     "vlc"
-     "whatsapp"
-  ) -}}
-  {{- if and (eq .chezmoi.os "darwin") (le "14" (substr 7 9 .osid)) -}}
-    {{- $casks = concat $casks (list
+      {{- $casks = concat $casks (list
+        "balenaetcher"
+        "gns3"
+        "spotify"
+        "telegram"
+        "transmission"
+        "unnaturalscrollwheels"
+        "vagrant"
+        "vlc"
+        "whatsapp"
+        ) -}}
+     {{- if and (eq .chezmoi.os "darwin") (le "14" (substr 7 9 .osid)) -}}
+     {{- $casks = concat $casks (list
        "vagrant-vmware-utility"
        "vmware-fusion"
        ) -}}
@@ -79,12 +87,13 @@
 
   {{ if .core.personal -}}
   {{- $brews = concat $brews (list
-     "age"
-     "gopass"
-     "gnupg"
-     "vault"
-     ) -}}
-  {{- end -}}
+    "age"
+    "gopass"
+    "gnupg"
+    "pinentry-mac"
+    "vault"
+    ) -}}
+    {{- end -}}
 {{- end -}}
 
 #!/bin/bash

@@ -26,10 +26,13 @@ fi
 # Note that the tmux server is started in the background regardless of this option.
 # This is useful to be properly welcomed to the terminal while the tmux session is
 # being restored, e.g. with tmux-resurrect/continuum.
-: ${TMUX_AUTOSTART_MODE:=prompt}
+: ${TMUX_AUTOSTART_MODE:=background}
 
 # The name of the default created session if none are defined in the tmux config.
 : ${TMUX_DEFAULT_SESSION:=main}
+
+# The terminal must be in application mode for $terminfo values to be valid.
+zmodload zsh/terminfo
 
 # NOTE: The parameters below are exported to be used from within the tmux config file.
 
