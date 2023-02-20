@@ -1,2 +1,13 @@
+# Git Config is on .config
 .gitconfig
 .gitignore
+
+# Remove legacy code here
+.bash_history
+.lesshst
+.oh-my-zsh
+.viminfo
+.zcompdump**
+.zsh_history
+.zsh_sessions
+.zshrc.bak
