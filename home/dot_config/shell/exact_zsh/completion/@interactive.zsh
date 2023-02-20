@@ -171,6 +171,15 @@ fpath+=('/usr/share/zsh/vendor-completions/')
 #
 # Additional completion definitions
 #
+#zi wait pack for brew-completions
+
+zi has'chezmoi' id-as='chezmoi-completions' wait as='completion' lucid \
+  atclone="+zi-message 'Installing Chezmoi completions...'; \
+    command mkdir -p ${ZPFX}/completions; \
+    command chezmoi completion zsh --output=${ZPFX}/completions/_chezmoi" \
+  atload='fpath+=( ${ZPFX}/completions )' \
+  atpull='%atclone' run-atpull nocompile for \
+    z-shell/0
 
 # Load completions which are not zsh-compatible using bashcompinit.
 # This must run after compinit.

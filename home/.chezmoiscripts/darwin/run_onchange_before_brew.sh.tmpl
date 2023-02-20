@@ -1,6 +1,5 @@
 {{- /* # Boostrap packages */ -}}
-{{- $brews := list
-    "curl" -}}
+{{- $brews := list -}}
 {{- $casks := list -}}
 
 {{- /* # Core packages */ -}}
@@ -33,7 +32,7 @@
     "podman"
     "podman-compose") -}}
 
-  {{- if and (eq .chezmoi.arch "amd64") (not .core.headless) -}}
+  {{- if not .core.headless -}}
     {{- $casks = concat $casks (list
       "podman-desktop") -}}
   {{- end -}}

@@ -10,4 +10,4 @@ fi
 
 # Add competions for programs installed with homebrew to fpath.
 # NOTE: This must run before compinit
-fpath=($HOMEBREW_PREFIX/share/zsh/site-functions $fpath)
+fpath=($(brew --prefix)/share/zsh/site-functions $fpath)

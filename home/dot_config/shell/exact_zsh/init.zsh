@@ -15,7 +15,7 @@
 xsh module zi interactive
 
 # Load the homebrew module so that programs can be found in path.
-xsh module brew interactive:login
+xsh module brew interactive
 
 # Load the tmux module first in case autostart is enabled.
 xsh module tmux interactive:login

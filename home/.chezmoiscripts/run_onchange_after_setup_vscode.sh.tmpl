@@ -49,7 +49,9 @@ set -eux
 {{ if len $extensions  -}}
   if [ "$(command -v code)" ]; then
   {{ range $extensions -}}
-    code --force --install-extension {{ . }}
+    code --user-data-dir="${XDG_CONFIG_HOME}/vscode"  \
+         --extensions-dir="${XDG_CACHE_HOME}/vscode"  \
+         --force --install-extension {{ . }}
   {{ end -}}
   fi
 {{ end }}
