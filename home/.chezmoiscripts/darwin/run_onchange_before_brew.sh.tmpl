@@ -15,15 +15,22 @@
 {{- /* #General Dev packages */ -}}
 {{ if .core.coding }}
   {{- $brews = concat $brews (list
+    "actionlint"
     "gh"
     "git-extras"
     "git-delta"
     "git-lfs"
     "httpie"
+    "pre-commit"
     "tealdeer"
     "tmux"
     "tmux-xpanes"
     ) -}}
+    {{- if eq .chezmoi.arch "arm64" }}
+      {{- $brews = concat $brews (list
+        "tart"
+      ) -}}
+    {{- end }}
 {{- end -}}
 
 {{- /* # Docker packages */ -}}
@@ -87,6 +94,7 @@
   {{ if .core.personal -}}
   {{- $brews = concat $brews (list
     "age"
+    "inean/brews/mac-telnet"
     "gopass"
     "gnupg"
     "pinentry-mac"
@@ -100,34 +108,48 @@
 set -eufo pipefail
 
 # Install Homebrew.
-if [ ! -x "$(command -v brew)" ]; then
-   brew_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-   if [ "$(command -v curl)" ]; then
+
+# Define homebrew environment
+{{ if eq .chezmoi.arch "amd64" -}}
+  HOMEBREW_PREFIX="/usr/local"
+{{ else -}}
+  HOMEBREW_PREFIX="/opt/homebrew"
+{{ end }}
+
+if [ ! -x "$(command -v ${HOMEBREW_PREFIX}/bin/brew)" ]; then
+  brew_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+  if [ "$(command -v curl)" ]; then
     /bin/bash -c "$(curl -fsSL $brew_url)"
-  elif [ "$(command -v wget)" ]; then
-    /bin/bash -c "$(wget -qO- $brew_url)"
   else
-    echo "To install Homebrew, you must have curl or wget installed." >&2
+    echo "To install Homebrew, you must have curl installed." >&2
     exit 1
   fi
   # Ensure brew could be find
 fi
 
 # Export homebrew environment
-{{ if eq .chezmoi.arch "amd64" }}
-  eval $(/usr/local/bin/brew shellenv)
-{{ else }}
-  eval $(/opt/homebrew/bin/brew shellenv)
-{{ end }}
+eval $("${HOMEBREW_PREFIX}/bin/brew" shellenv)
 
 # Make sure we’re using the latest Homebrew.
 brew update
 
-brew bundle --no-lock --no-upgrade --file=/dev/stdin <<EOF
+# Build Brewfile
+BREWFILE="${XDG_CONFIG_HOME}/brew/Brewfile"
+mkdir -p "${BREWFILE%/*}"
+
+cat > ${BREWFILE} <<EOF
 tap "homebrew/core"
 tap "homebrew/cask"
 tap "homebrew/bundle"
 tap "homebrew/services"
+{{- if .core.coding }}
+  {{- if eq .chezmoi.arch "arm64" }}
+    tap "cirruslabs/cli"
+  {{- end }}
+{{- end }}
+{{- if .core.personal }}
+tap "inean/brews", "https://github.com/inean/homebrew.git"
+{{- end }}
 
 {{ range ($brews | sortAlpha | uniq) -}}
 brew "{{ . }}"
@@ -137,17 +159,15 @@ cask "{{ . }}"
 {{ end -}}
 EOF
 
-# Now upgrade any already-installed formulae.
-brew upgrade
-# And finally cleanup all this
-brew cleanup
+# Now install and upgrade any already-installed formulae.
+brew bundle install --no-upgrade --no-lock --file=$BREWFILE
+
+# And cleanup not listed formulaes
+brew bundle cleanup --force --file=$BREWFILE
 
 {{ if .core.personal -}}
-# Save Homebrew’s installed location.
-BREW_PREFIX=$(brew --prefix)
-
 # Switch to using brew-installed bash as default bash shell
-if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
-  echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
+if ! fgrep -q "${HOMEBREW_PREFIX}/bin/bash" /etc/shells; then
+  echo "${HOMEBREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
 fi;
 {{- end -}}
