@@ -4,6 +4,7 @@
 
 # Remove legacy code here
 .bash_history
+.bash_sessions
 .lesshst
 .oh-my-zsh
 .viminfo
