@@ -1,0 +1,41 @@
+#
+# Browser configuration module
+
+{{ if eq .chezmoi.os "linux" }}
+export BROWSER=elinks
+# Define the default web browser.
+if [ -n "$DISPLAY" ]; then
+  if [ "$(command -v xdg-settings)" ]; then
+    browse="$(xdg-settings get default-web-browser)"
+    export BROWSER="$browse"
+  fi
+fi
+{{ end }}
+
+{{ if eq .chezmoi.os "darwin" }}
+# set sanity default
+export BROWSER=safari
+alias safari='open -a Safari'
+# get the default browser
+browser=$(defaults read ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure | awk -F'"' '/http;/{print window[(NR)-1]}{window[NR]=$2}')
+# set the browser
+if [ "$browser" = "com.apple.Safari" ]; then
+  export BROWSER=safari
+elif [ "$browser" = "com.apple.SafariTechnologyPreview" ]; then
+  export BROWSER=safari-technology-preview
+  alias safari-technology-preview='open -a Safari\ Technology\ Preview'
+elif [ "$browser" = "com.google.Chrome" ]; then
+  export BROWSER=google-chrome
+  alias google-chrome='open -a Google\ Chrome'
+elif [ "$browser" = "com.google.Chrome.canary" ]; then
+  export BROWSER=chrome-canary
+  alias chrome-canary='open -a Google\ Chrome\ Canary'
+elif [ "$browser" = "org.mozilla.firefox" ]; then
+  export BROWSER=firefox
+  alias firefox='open -a Firefox'
+fi
+{{ end }}
+
+# Convenience aliases.
+alias browse='${(z)BROWSER}'
+alias b='browse'

@@ -11,4 +11,7 @@
 xsh module core
 
 # Load application-specific modules that have no specific requirements.
-xsh module pager      interactive:env
+xsh module pager interactive:env
+
+# Load additional application-specific modules that provide and bind ZLE widgets.
+xsh module browser interactive:env
