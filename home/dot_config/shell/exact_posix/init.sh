@@ -9,3 +9,6 @@
 #
 
 xsh module core
+
+# Load application-specific modules that have no specific requirements.
+xsh module pager      interactive:env
