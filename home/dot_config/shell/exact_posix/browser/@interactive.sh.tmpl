@@ -14,28 +14,38 @@ fi
 
 {{ if eq .chezmoi.os "darwin" }}
 # set sanity default
-export BROWSER=safari
-alias safari='open -a Safari'
+export BROWSER=open
 # get the default browser
 browser=$(defaults read ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure | awk -F'"' '/http;/{print window[(NR)-1]}{window[NR]=$2}')
 # set the browser
 if [ "$browser" = "com.apple.Safari" ]; then
+  safari() {
+    open -a 'Safari' "$@"
+  }
   export BROWSER=safari
 elif [ "$browser" = "com.apple.SafariTechnologyPreview" ]; then
+  safari-thechnology-preview() {
+    open -a 'Safari\ Technology\ Preview' "$@"
+  }
   export BROWSER=safari-technology-preview
-  alias safari-technology-preview='open -a Safari\ Technology\ Preview'
 elif [ "$browser" = "com.google.Chrome" ]; then
-  export BROWSER=google-chrome
-  alias google-chrome='open -a Google\ Chrome'
-elif [ "$browser" = "com.google.Chrome.canary" ]; then
+  chrome() {
+    open -a 'Google\ Chrome' "$@"
+  }
+  export BROWSER=chrome
+elif [ "$browser" = "com.google.Chrome.Canary" ]; then
+  chrome-canary() {
+    open -a 'Google\ Chrome\ Canary' "$@"
+  }
   export BROWSER=chrome-canary
-  alias chrome-canary='open -a Google\ Chrome\ Canary'
 elif [ "$browser" = "org.mozilla.firefox" ]; then
+  firefox() {
+    open -a Firefox "$@"
+  }
   export BROWSER=firefox
-  alias firefox='open -a Firefox'
 fi
 {{ end }}
 
 # Convenience aliases.
-alias browse='${(z)BROWSER}'
+alias browse='${BROWSER}'
 alias b='browse'

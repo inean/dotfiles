@@ -8,7 +8,7 @@ if [[ $TERM == 'dumb' ]]; then
 fi
 
 # Convenience aliases.
-alias p='${(z)PAGER}'
+alias p='${PAGER}'
 alias more='less' # less is more or less more
 
 # Set default less options.
