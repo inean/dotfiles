@@ -1,0 +1,5 @@
+# Set the theme.
+--theme="Visual Studio Dark+"
+
+# Never wrap and let the pager do its job.
+--wrap=never
