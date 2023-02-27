@@ -1,6 +1,7 @@
 {{/* boolean feature tags */}}
 {{- $coding    := false -}}{{/* true if this machine should have developer tools */}}
 {{- $docker    := false -}}{{/* true if this machine should have Docker installed */}}
+{{- $embedded  := false -}}{{/* true if this machine is an iot like board or some legacy hardware */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $headless  := false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- $personal  := false -}}{{/* true if this machine should have personal secrets */}}
@@ -93,6 +94,7 @@ encryption = "age"
 
     core.ephemeral = {{ $ephemeral }}
     core.coding = {{ $coding }}
+    core.embedded = {{ $embedded }}
     core.docker = {{ $docker }}
     core.headless = {{ $headless }}
     core.personal = {{ $personal }}
