@@ -40,9 +40,9 @@ path_prepend () {
     export ${var}="${1}${value:+:${value}}"
 }
 
-# Usage: pathappend /path/to/bin [PATH]
+# Usage: path_append /path/to/bin [PATH]
 # Eg, to append ~/bin to $PATH
-#     pathappend ~/bin PATH
+#     path_append ~/bin PATH
 path_append () {
     [ -d "${1}" ] || return
     path_remove "${1}" "${2}"
@@ -51,12 +51,44 @@ path_append () {
     export $var="${value:+${value}:}${1}"
 }
 
+# Usage: path_command bin <args>
+# get an array of full paths to a command. If any args is given, the
+# command is executed with those args. If successful, the full path to
+# the command is printed to stdout.
+# Eg, to get the full path to the 'ls' command
+#     path_command ls
+# Eg, to get the full path to the 'ls' command and execute it
+#     path_command ls -l
+# Eg, to get the full path to the 'ls' command and execute it, but
+#     only if it is in the path
+#     path_command ls -l && ls -l
+path_command () {
+    local cmd="$1"
+    shift
+    local IFS=':'
+    local dir
+    for dir in $(indirect_expand PATH); do
+        if [ -x "${dir}/${cmd}" ]; then
+            if [ $# -gt 0 ]; then
+                "${dir}/${cmd}" "$@"
+                if [ $? -eq 0 ]; then
+                    echo "${dir}/${cmd}"
+                fi
+            else
+                echo "${dir}/${cmd}"
+            fi
+            return 0
+        fi
+    done
+    return 1
+}
+
 # If you come from bash you might have to change your $PATH.
 {{- $paths := list }}
 {{- $homeDir := .chezmoi.homeDir }}
 {{- range $_, $relPath := list "bin" ".local/bin" }}
-{{-    $path := joinPath $homeDir $relPath }}
-        path_prepend $path PATH
+{{   $path := joinPath $homeDir $relPath -}}
+        path_prepend {{ $path }} PATH
 {{- end }}
 
 # Explicitly set XDG base dirs as they are needed later
