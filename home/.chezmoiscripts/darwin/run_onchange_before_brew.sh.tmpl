@@ -4,31 +4,31 @@
 
 {{- /* # Core packages */ -}}
 {{- $brews = concat $brews (list
-    "bash"
-    "bash-completion@2"
-    "coreutils"
-    "findutils"
-    "gnu-sed"
-    "jq"
+    `"bash"`
+    `"bash-completion@2"`
+    `"coreutils"`
+    `"findutils"`
+    `"gnu-sed"`
+    `"jq"`
     ) -}}
 
 {{- /* #General Dev packages */ -}}
 {{ if .core.coding }}
   {{- $brews = concat $brews (list
-    "actionlint"
-    "gh"
-    "git-extras"
-    "git-delta"
-    "git-lfs"
-    "httpie"
-    "pre-commit"
-    "tealdeer"
-    "tmux"
-    "tmux-xpanes"
+    `"actionlint"`
+    `"gh"`
+    `"git-extras"`
+    `"git-delta"`
+    `"git-lfs"`
+    `"httpie"`
+    `"pre-commit"`
+    `"tealdeer"`
+    `"tmux"`
+    `"tmux-xpanes"`
     ) -}}
     {{- if eq .chezmoi.arch "arm64" }}
       {{- $brews = concat $brews (list
-        "tart"
+        `"tart"`
       ) -}}
     {{- end }}
 {{- end -}}
@@ -36,12 +36,12 @@
 {{- /* # Docker packages */ -}}
 {{- if .core.docker -}}
   {{ $brews = concat $brews (list
-    "podman"
-    "podman-compose") -}}
+    `"podman"`
+    `"podman-compose"`) -}}
 
   {{- if not .core.headless -}}
     {{- $casks = concat $casks (list
-      "podman-desktop") -}}
+      `"podman-desktop"`) -}}
   {{- end -}}
 
 {{- end -}}
@@ -49,56 +49,56 @@
 {{- /* # GUI core packages */ -}}
 {{- if not .core.headless -}}
   {{- $casks = concat $casks (list
-    "firefox"
-    "google-chrome"
-    "iterm2"
-    "visual-studio-code"
+    `"firefox"`
+    `"google-chrome"`
+    `"iterm2"`
+    `"visual-studio-code"`
     ) -}}
 {{- end -}}
 
 {{- if or (not .core.headless) (not .core.ephemeral) -}}
   {{- $brews = concat $brews (list
-     "bat"
-     "exa"
-     "ffmpeg"
-     "fzf"
-     "ripgrep"
-     "wget"
-     "xz"
-     "ssh-copy-id"
-     "yt-dlp"
+     `"bat"`
+     `"eza"`
+     `"ffmpeg"`
+     `"fzf"`
+     `"ripgrep"`
+     `"wget"`
+     `"xz"`
+     `"ssh-copy-id"`
+     `"yt-dlp"`
      ) -}}
      {{- if eq .chezmoi.arch "amd64" -}}
     {{- $brews = concat $brews (list
-      "shellcheck") -}}
+      `"shellcheck"`) -}}
       {{- end -}}
 
       {{- $casks = concat $casks (list
-        "balenaetcher"
-        "gns3"
-        "spotify"
-        "telegram"
-        "transmission"
-        "unnaturalscrollwheels"
-        "vagrant"
-        "vlc"
-        "whatsapp"
+        `"balenaetcher"`
+        `"gns3"`
+        `"spotify"`
+        `"telegram"`
+        `"ultimaker-cura"`
+        `"unnaturalscrollwheels"`
+        `"vagrant"`
+        `"vlc"`
+        `"whatsapp"`
         ) -}}
      {{- if and (eq .chezmoi.os "darwin") (le "14" (substr 7 9 .osid)) -}}
      {{- $casks = concat $casks (list
-       "vagrant-vmware-utility"
-       "vmware-fusion"
+       `"vagrant-vmware-utility"`
+       `"vmware-fusion"`
        ) -}}
   {{- end -}}
 
   {{ if .core.personal -}}
   {{- $brews = concat $brews (list
-    "age"
-    "inean/brews/mac-telnet"
-    "gopass"
-    "gnupg"
-    "pinentry-mac"
-    "vault"
+    `"age"`
+    `"inean/brews/mac-telnet", args: ["HEAD"]`
+    `"gopass"`
+    `"gnupg"`
+    `"pinentry-mac"`
+    `"vault"`
     ) -}}
     {{- end -}}
 {{- end -}}
@@ -152,11 +152,11 @@ tap "inean/brews", "https://github.com/inean/homebrew.git"
 {{- end }}
 
 {{ range ($brews | sortAlpha | uniq) -}}
-brew "{{ . }}"
+brew {{ . }}
 {{ end -}}
 {{ range ($casks | sortAlpha | uniq) -}}
-cask "{{ . }}"
-{{ end -}}
+cask {{ . }}
+{{ end -}} 
 EOF
 
 # Now install and upgrade any already-installed formulae.
@@ -166,7 +166,7 @@ brew bundle install --no-upgrade --no-lock --file=$BREWFILE
 brew bundle cleanup --force --file=$BREWFILE
 
 {{ if .core.personal -}}
-# Switch to using brew-installed bash as default bash shell
+# Switch to using brew-installed bash as default insteand of systemn bash shell
 if ! fgrep -q "${HOMEBREW_PREFIX}/bin/bash" /etc/shells; then
   echo "${HOMEBREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
 fi;
