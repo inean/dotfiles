@@ -47,11 +47,11 @@
 
 #Install Fira Code fonts
 {{-   range (list
-        "Fira Code Regular Nerd Font Complete.ttf"
-        "Fira Code Regular Nerd Font Complete Mono.ttf") }}
+        "FiraCodeNerdFont-Regular.ttf"
+        "FiraCodeNerdFontMono-Regular.ttf") }}
 ["{{ $fontDir }}/{{ . }}"]
     type = "file"
-    url = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Regular/complete/{{ . }}"
+    url = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Regular/{{ . }}"
     refreshPeriod = "168h"
 {{-   end }}
 
