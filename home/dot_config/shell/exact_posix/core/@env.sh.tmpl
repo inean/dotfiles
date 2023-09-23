@@ -120,10 +120,10 @@ export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export NODE_REPL_HISTORY="$XDG_STATE_HOME/node/repl_history"
 
 # brew
-{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
-    path_prepend "/opt/homebrew/bin"
-    path_prepend "/opt/homebrew/sbin"
-{{- end -}}
+{{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") -}}
+path_prepend "/opt/homebrew/bin"
+path_prepend "/opt/homebrew/sbin"
+{{- end }}
 
 # locale
 export LANG=es_ES.UTF-8
