@@ -16,6 +16,7 @@
 {{ if .core.coding }}
   {{- $brews = concat $brews (list
     `"actionlint"`
+    `"cargo-generate"`
     `"gh"`
     `"git-extras"`
     `"git-delta"`
@@ -138,8 +139,6 @@ BREWFILE="${XDG_CONFIG_HOME}/brew/Brewfile"
 mkdir -p "${BREWFILE%/*}"
 
 cat > ${BREWFILE} <<EOF
-tap "homebrew/core"
-tap "homebrew/cask"
 tap "homebrew/bundle"
 tap "homebrew/services"
 {{- if .core.coding }}
