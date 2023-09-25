@@ -1,9 +1,7 @@
 {{/* boolean feature tags */}}
 {{- $coding    := false -}}{{/* true if this machine should have developer tools */}}
 {{- $docker    := false -}}{{/* true if this machine should have Docker installed */}}
-{{- $embedded  := false -}}{{/* true if this machine is an iot like board or some legacy hardware */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
-{{- $headless  := false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- $personal  := false -}}{{/* true if this machine should have personal secrets */}}
 {{- "" -}}
 
@@ -16,11 +14,18 @@
 {{- "" -}}
 
 {{/* os short name */}}
-{{- $osid := .chezmoi.os -}}
-{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
-{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
-{{- end -}}
 
+{{/* detect Linux flavor */}}
+{{- $osid := .chezmoi.os -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if hasKey .chezmoi.osRelease "id" -}}
+{{-     $osid = printf "%s-%s" .chezmoi.osRelease.id .chezmoi.os -}}
+{{-     if hasKey .chezmoi.osRelease "variantID" -}}
+{{-       $osid = printf "%s-%s" .chezmoi.osRelease.id .chezmoi.osRelease.variantID -}}
+{{-     end -}}
+{{-   end -}}
+{{  end -}}
+        
 {{/* detect MacOS version */}}
 {{- if eq .chezmoi.os "darwin" -}}
     {{ $macos_version := output "sw_vers" "-productVersion" | trim }}
@@ -33,13 +38,12 @@
 {{- $is_wsl := false -}}{{/* true if this is a WSL linux machine */}}
 {{- if eq .chezmoi.os "linux" -}}
 {{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
-{{-     $headless = true -}}
 {{-     $is_wsl = true -}}
 {{-   end -}}
 {{- end -}}
 
 {{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
-{{- if or (env "CODESPACES") (env "REMOTE_CONTAINERS_IPC") (eq .chezmoi.username "root" "ubuntu" "vagrant" "vscode") -}}
+{{- if or (env "CODESPACES") (env "REMOTE_CONTAINERS_IPC") (eq .chezmoi.username "esp" "root" "ubuntu" "vagrant" "vscode") -}}
 {{-   $ephemeral = true -}}
 {{-   $headless = true -}}
 {{- end -}}
@@ -50,7 +54,7 @@
 {{-   if hasKey . "email" -}}
 {{-     $email = .email -}}
 {{-   else -}}
-{{-     $email = promptString "email" -}}
+{{-     $email = promptString "Insert GitHub email" -}}
 {{-   end -}}
 {{- end -}}
 
@@ -66,18 +70,18 @@
 {{-   $coding   = true -}}
 
 {{- else if eq .chezmoi.hostname "raspberrypi" -}}
-{{-   $headless = true -}}
 {{-   $personal = true -}}
 
-{{- else if not $ephemeral -}}
-{{-   if stdinIsATTY -}}
-{{-     $headless  = promptBoolOnce . "headless" "headless" -}}
-{{-     $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" -}}
-{{-     $docker  = promptBoolOnce . "docker" "docker" -}}
-{{-   else -}}
-{{-     $ephemeral = true -}}
-{{-     $headless = true -}}
-{{-   end -}}
+{{- else if stdinIsATTY -}}
+{{-   $personal = promptBoolOnce . "personal" "Install Personal Secrets" -}}
+{{-   $docker = promptBoolOnce . "docker" "Container Support" -}}
+{{-  if $docker -}}
+{{-    $coding = promptBoolOnce . "coding" "Install Developer tools" -}}
+{{-  else -}}
+{{-   $ephemeral = promptBoolOnce . "ephemeral" "Is a short lived machine" -}}
+{{-  end -}}
+{{- else -}}
+{{-   $ephemeral = true -}}
 {{- end -}}
 
 {{- if $personal }}
@@ -87,6 +91,9 @@ encryption = "age"
     recipient = "age1fzh7f38c46er0xz5xevc3ga8ya8lwv6gh4s5d662vht07uv9sg4sgm8cs5"
 {{- end }}
 
+[diff]
+    exclude = [ "scripts" ]
+
 [data]
     email = {{ $email | quote }}
     hostname = {{ .chezmoi.hostname | quote }}
@@ -94,9 +101,7 @@ encryption = "age"
 
     core.ephemeral = {{ $ephemeral }}
     core.coding = {{ $coding }}
-    core.embedded = {{ $embedded }}
     core.docker = {{ $docker }}
-    core.headless = {{ $headless }}
     core.personal = {{ $personal }}
 
     flavors.go = {{ $go }}
