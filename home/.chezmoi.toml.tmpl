@@ -3,7 +3,7 @@
 {{- $docker    := false -}}{{/* true if this machine should have Docker installed */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $personal  := false -}}{{/* true if this machine should have personal secrets */}}
-{{- "" -}}
+{{- $headless  := false -}}{{/* true if this machine is a remote one */}}
 
 {{/* Developer flavors */}}
 {{- $go      := false -}}
@@ -82,6 +82,7 @@
 {{-  end -}}
 {{- else -}}
 {{-   $ephemeral = true -}}
+{{-   $headless = true -}}
 {{- end -}}
 
 {{- if $personal }}
@@ -103,6 +104,7 @@ encryption = "age"
     core.coding = {{ $coding }}
     core.docker = {{ $docker }}
     core.personal = {{ $personal }}
+    core.headless = {{$headless }}
 
     flavors.go = {{ $go }}
     flavors.python = {{ $python }}
