@@ -5,13 +5,13 @@
     },
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
-			"configureZshAsDefaultShell": "true",
+	    "configureZshAsDefaultShell": "true",
             "installOhMyZsh": "false",
-			"username": "vscode",
-			"userUid": "1000",
-			"userGid": "1000",
-			"upgradePackages": "true"
-		}
+	    "username": "vscode",
+	    "userUid": "1000",
+	    "userGid": "1000",
+	    "upgradePackages": "true"
+	}
     },
     "runArgs": [
         "--userns=keep-id:uid=1000,gid=1000"
