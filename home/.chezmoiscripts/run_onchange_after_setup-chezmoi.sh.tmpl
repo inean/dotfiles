@@ -1,18 +1,28 @@
-#!/bin/bash
+#!/bin/sh
 
 {{- if eq .chezmoi.os "linux" "darwin" }}
 
 echo "After: Setting up chezmoi"
 
 if [ $(command -v chezmoi) ]; then
-    if [ -d "${BASH_COMP_DIR}" ] && [ ! -f "${BASH_COMP_DIR}/chezmoi" ]; then
-        echo "Installing chezmoi bash completions..."
-        chezmoi completion bash | sudo tee ${BASH_COMP_DIR}/chezmoi > /dev/null
+    # Bash autocompletions
+    BASH_COMP_USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/bash_completion"
+    if [ ! -d "${BASH_COMP_USER_DIR}" ]; then
+        mkdir "${BASH_COMP_USER_DIR}"
+        if [ ! -f "${BASH_COMP_USER_DIR}/chezmoi" ]; then
+            echo "Installing chezmoi bash completions..."
+            chezmoi completion bash | tee ${BASH_COMP_USER_DIR}/chezmoi > /dev/null
+        fi
     fi
-    if [ -d "${ZSH_COMP_DIR}" ] && [ ! -f "${ZSH_COMP_DIR}/_chezmoi" ]; then
-        echo "Installing chezmoi zsh completions..."
-        chezmoi completion zsh | sudo tee ${ZSH_COMP_DIR}/_chezmoi > /dev/null
+    # Zsh User autocompletions
+    ZSH_COMP_USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh_completion"
+    if [ ! -d "${ZSH_COMP_USER_DIR}" ]; then
+        mkdir "${ZSH_COMP_USER_DIR}"
+        if [ ! -f "${ZSH_COMP_USER_DIR}/_chezmoi" ]; then
+            echo "Installing chezmoi zsh completions..."
+            chezmoi completion zsh | tee ${ZSH_COMP_USER_DIR}/_chezmoi > /dev/null
+        fi
     fi
 fi
+{{- end }}
 
-{{- end -}}
