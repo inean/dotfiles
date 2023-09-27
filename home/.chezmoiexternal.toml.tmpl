@@ -87,3 +87,11 @@
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
+
+{{- if .core.coding }}
+[".cache/toolbox-vscode"]
+    type = "git-repo"
+    url = "https://github.com/owtaylor/toolbox-vscode.git"
+    refreshPeriod = "168h"
+{{- end }}
+
