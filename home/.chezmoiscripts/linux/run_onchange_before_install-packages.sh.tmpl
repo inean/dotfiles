@@ -1,0 +1,22 @@
+{{- 
+$core_packages := list 
+    "zsh"
+-}}
+
+{{- if (output "sh" "-c" "lspci | grep BCM4360") }}
+{{-    $core_packages = mustAppend $core_packages "kmod-wl" }}
+{{- end -}}
+
+{{- $sudo := "sudo " -}}
+{{- if eq .chezmoi.username "root" -}}
+{i-   $sudo = "" -}}
+{{- end -}}
+
+#!/bin/sh
+
+set -eu -o pipefail
+
+{{/* On silverblue install minimal packages on ostree. Tools on a toolbox */}} 
+{{- if eq .osid "fedora-silverblue" }}
+  {{- $sudo }}rpm-ostree install --idempotent {{range $core_packages}}{{ .}} {{ end }}
+{{- end }}
