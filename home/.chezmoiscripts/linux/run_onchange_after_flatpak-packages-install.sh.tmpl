@@ -1,0 +1,33 @@
+{{- $fedora_packs := list -}}
+{{- $flathub_packs := list -}}
+
+{{/* core packages */}}
+
+{{- /* # GUI core packages */ -}}
+{{- if not .core.headless -}}
+{{-   $fedora_packs = concat $fedora_packs (list
+        `"org.gnome.Evolution"`
+) -}}
+{{-   $flathub_packs = concat $flathub_packs (list
+        `"org.chromium.Chromium"`
+) -}}
+{{- end }}
+
+{{- $sudo := "sudo " -}}
+{{- if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/sh
+
+set -ef -o pipefail
+
+{{- if lookPath "flatpak" }}
+{{-   range $fedora_packs }}
+( flatpak info {{ . }} > /dev/null 2>&1 || flatpak install -y "fedora" {{ . }} ) 
+{{    end }}
+{{-   range $flathub_packs }}
+( flatpak info {{ . }} > /dev/null 2>&1 || flatpak install -y "flathub" {{ . }} )
+{{    end }}
+{{- end }}
+
