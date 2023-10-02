@@ -88,10 +88,12 @@
     stripComponents = 1
     refreshPeriod = "168h"
 
-{{- if .core.coding }}
-[".cache/toolbox-vscode"]
-    type = "git-repo"
-    url = "https://github.com/owtaylor/toolbox-vscode.git"
+{{- if and .core.coding (eq .osid "fedora-silverblue" ) }}
+{{ $hotspawnVersion := "latest" }}
+[".var/app/com.visualstudio.code/data/node_modules/bin/host-spawn"]
+    type = "file"
+    url = "https://github.com/1player/host-spawn/releases/{{ $hotspawnVersion }}/download/host-spawn-x86_64"
+    executable = true
     refreshPeriod = "168h"
 {{- end }}
 
