@@ -1,5 +1,6 @@
 {{- $fedora_packs := list -}}
 {{- $flathub_packs := list -}}
+{{- $remove_packs := list -}}
 
 {{/* core packages */}}
 
@@ -22,12 +23,17 @@
 
 set -ef -o pipefail
 
+# run if list of flatpak changes: {{ output "flatpak" "list" "--columns" "application" | sha256sum }}
+
 {{- if lookPath "flatpak" }}
 {{-   range $fedora_packs }}
 ( flatpak info {{ . }} > /dev/null 2>&1 || flatpak install -y "fedora" {{ . }} ) 
 {{    end }}
 {{-   range $flathub_packs }}
 ( flatpak info {{ . }} > /dev/null 2>&1 || flatpak install -y "flathub" {{ . }} )
+{{    end }}
+{{-   range $remove_packs }}
+(flatpak info {{ . }} > /dev/null 2>&1 && flatpak remove -y {{ . }} )
 {{    end }}
 {{- end }}
 
