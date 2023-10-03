@@ -1,11 +1,6 @@
-{{- 
-$install_packages := list 
-    "zsh"
+{{-
+$remove_packages := list
 -}}
-
-{{- if (output "sh" "-c" "lspci | grep BCM4360") }}
-{{-    $install_packages = mustAppend $install_packages "kmod-wl" }}
-{{- end -}}
 
 {{- $sudo := "sudo " -}}
 {{- if eq .chezmoi.username "root" -}}
@@ -20,7 +15,7 @@ set -eu -o pipefail
 
 {{/* On silverblue install minimal packages on ostree. Tools on a toolbox */}} 
 {{- if eq .osid "fedora-silverblue" }}
-  {{- if $install_packages }}
-    {{- $sudo }}rpm-ostree install --idempotent {{range $install_packages }} {{ . }} {{ end }}
+  {{if $remove_packages }}
+    {{- $sudo }}rpm-ostree override remove  {{range $remove_packages }} {{ . }} {{ end }}
   {{- end }}  
 {{- end }}
