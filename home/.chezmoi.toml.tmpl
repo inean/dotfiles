@@ -13,6 +13,15 @@
 {{- $android := false -}}
 {{- "" -}}
 
+{{/* Packing system */}}
+{{- $brew     := eq .chezmoi.os "darwin" -}}
+{{- $rpm      := ne "" (lookPath "rpm") -}}
+{{- $ostree   := ne "" (lookPath "rpm-ostree") -}}
+{{- $deb      := ne "" (lookPath "dpkg") -}}
+{{- $flatpak  := ne "" (lookPath "flatpak") -}}
+{{- $snap     := ne "" (lookPath "snap") -}}
+{{- "" -}}
+
 {{/* os short name */}}
 
 {{/* detect Linux flavor */}}
@@ -64,11 +73,6 @@
 {{-   $personal = true -}}
 {{-   $coding   = true -}}
 
-{{- else if eq .chezmoi.hostname "mbp2013" -}}
-{{-   $docker   = true -}}
-{{-   $personal = true -}}
-{{-   $coding   = true -}}
-
 {{- else if eq .chezmoi.hostname "raspberrypi" -}}
 {{-   $personal = true -}}
 
@@ -92,22 +96,30 @@ encryption = "age"
     recipient = "age1fzh7f38c46er0xz5xevc3ga8ya8lwv6gh4s5d662vht07uv9sg4sgm8cs5"
 {{- end }}
 
-[diff]
-    exclude = [ "scripts" ]
-
 [data]
     email = {{ $email | quote }}
-    hostname = {{ .chezmoi.hostname | quote }}
     osid = {{ $osid | quote }}
+    hostname = {{ .chezmoi.hostname | quote }}
 
+{{/* Flavors */}}
     core.ephemeral = {{ $ephemeral }}
     core.coding = {{ $coding }}
     core.docker = {{ $docker }}
     core.personal = {{ $personal }}
-    core.headless = {{$headless }}
+    core.headless = {{ $headless }}
 
+{{/* Pkgs systems */}}
+    pkgs.brew = {{ $brew }}
+    pkgs.rpm = {{ $rpm }}
+    pkgs.deb = {{ $deb }}
+    pkgs.ostree = {{ $ostree }}
+    pkgs.flatpak = {{ $flatpak }}
+    pkgs.snap = {{ $snap }}
+
+{{/* Tookboxes */}}
     flavors.go = {{ $go }}
     flavors.python = {{ $python }}
     flavors.rust = {{ $rust }}
     flavors.shell = {{ $shell }}
     flavors.android = {{ $android }}
+
