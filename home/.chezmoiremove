@@ -8,10 +8,12 @@
 .dotnet
 .dotnet
 .histfile
+.mozilla
 .oh-my-zsh
 .pki
 .profile
 .viminfo
+.vscode
 .zcompdump**
 .zsh_history
 .zsh_sessions
