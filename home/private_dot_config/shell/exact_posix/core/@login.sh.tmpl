@@ -32,12 +32,7 @@ command mkdir -p          \
 
 # Editor
 # ======
-export EDITOR='vim'
-# Define the default editor.
-if [ "$(command -v code)" ]; then
-  alias code='code --user-data-dir="${XDG_CONFIG_HOME}/vscode" --extensions-dir="${XDG_CACHE_HOME}/vscode"'
-  export EDITOR='code'
-fi
+export EDITOR='vi'
 export GIT_EDITOR="$EDITOR"
 export USE_EDITOR="$EDITOR"
 export VISUAL="$EDITOR"
