@@ -2,6 +2,8 @@
 
 set -ef -o pipefail
 
+# Trace update to /etc/passwd (to update SHELL) '{{ include "/etc/passwd" | sha256sum }}'
+
 {{ if eq .chezmoi.os "linux" "darwin" }}
 # ======
 # MAIN
