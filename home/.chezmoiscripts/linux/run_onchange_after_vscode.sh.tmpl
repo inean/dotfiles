@@ -28,6 +28,7 @@ fi
 # Add permissions
 if ! flatpak override -u --show $FLATPAK_VSCODE | grep -q "tmp"; then
     flatpak override -u --filesystem=/tmp $FLATPAK_VSCODE
+    flatpak override -u --socket=wayland $FLATPAK_VSCODE
 fi
 
 PODMAN=$(command -v podman)

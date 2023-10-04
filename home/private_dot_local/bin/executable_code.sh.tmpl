@@ -177,17 +177,23 @@ while [ "$arg_index" -lt "${#args[@]}" ] ; do
     esac
 done
 
-if $add_user_data_dir ; then
-    new_args+=("--user-data-dir")
-    new_args+=("${XDG_CONFIG_HOME:-$HOME/.config/vscode}")
-fi
-
-{{- if ne .chezmoi.os "linux" }}
+# Check if code comes from flatpak or system wide
+{{- if and .pkgs.flatpak (output "sh" "-c" "flatpak list | grep com.visualstudio.code") }}
+  {{- $vscode_info := output "sh" "-c" "flatpak info -M com.visualstudio.code" }}
+# Regenerate script if permissions changes: {{ $vscode_info | sha256sum }}
+   {{- if regexMatch "sockets=.*wayland.*" $vscode_info }}
+new_args+=("--ozone-platform=wayland")
+   {{- end }}
+{{- else }}
 if $add_extensions_dir ; then
    new_args+=("--extensions-dir")
    new_args+=("${XDG_CACHE_HOME:-$HOME/.cache/vscode}")
 fi
 {{- end }}
+if $add_user_data_dir ; then
+    new_args+=("--user-data-dir")
+    new_args+=("${XDG_CONFIG_HOME:-$HOME/.config/vscode}")
+fi
 
 if $add_new_window ; then
     new_args+=("--new-window")

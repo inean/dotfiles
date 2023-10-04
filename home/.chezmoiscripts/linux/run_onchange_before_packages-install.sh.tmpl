@@ -4,7 +4,7 @@ $install_packages := list
 -}}
 
 {{- if (output "sh" "-c" "lspci | grep BCM4360") }}
-{{-    $install_packages = mustAppend $install_packages "kmod-wl" }}
+{{-    $install_packages = concat $install_packages (list "kmod-wl" "intel-media-driver")}}
 {{- end -}}
 
 {{- $sudo := "sudo " -}}
