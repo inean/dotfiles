@@ -15,9 +15,8 @@ xsh load core -s posix login
 
 
 # XDG paths for zsh.
-export ZDATADIR=${ZDATADIR:-$XDG_STATE_HOME/zsh}
+export ZDATADIR=${ZDATADIR:-$XDG_DATA_HOME/zsh}
 export ZCACHEDIR=${ZCACHEDIR:-$XDG_CACHE_HOME/zsh}
-export ZDOTDIR=${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}
 command mkdir -p $ZDATADIR $ZCACHEDIR $ZDORDIR
 
 #
