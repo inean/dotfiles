@@ -187,12 +187,12 @@ new_args+=("--ozone-platform=wayland")
 {{- else }}
 if $add_extensions_dir ; then
    new_args+=("--extensions-dir")
-   new_args+=("${XDG_CACHE_HOME:-$HOME/.cache/vscode}")
+   new_args+=("${XDG_CACHE_HOME:-$HOME/.cache}/vscode")
 fi
 {{- end }}
 if $add_user_data_dir ; then
     new_args+=("--user-data-dir")
-    new_args+=("${XDG_CONFIG_HOME:-$HOME/.config/vscode}")
+    new_args+=("${XDG_CONFIG_HOME:-$HOME/.config}/vscode")
 fi
 
 if $add_new_window ; then
