@@ -2,11 +2,14 @@
     "window.titleBarStyle": "custom",
     "dev.containers.dockerPath": "podman",
 {{- if .pkgs.flatpak }}
-    "terminal.integrated.defaultProfile.linux": "zsh",
-    "zsh": {
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.env.linux": {
+        "LD_PRELOAD": null,
+    },
+    "bash": {
       "path": "/app/bin/host-spawn",
-      "args": ["zsh"],
-      "icon": "terminal-zsh",
+      "args": ["bash"],
+      "icon": "terminal-bash",
       "overrideName": true
     },
 {{- end }}
