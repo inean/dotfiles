@@ -1,17 +1,27 @@
 {
+    "editor.fontLigatures": true,
     "window.titleBarStyle": "custom",
     "dev.containers.dockerPath": "podman",
 {{- if .pkgs.flatpak }}
-    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+      "zsh (login)": {
+        "path": "/app/bin/host-spawn",
+        "args": ["zsh", "-l"],
+        "icon": "terminal-linux",
+        "overrideName": true
+      },
+      "bash": {
+        "path": "/app/bin/host-spawn",
+        "args": ["bash"],
+        "icon": "terminal-bash",
+        "overrideName": true
+      },
+    },
     "terminal.integrated.env.linux": {
-        "LD_PRELOAD": null,
+      "LD_PRELOAD": null,
     },
-    "bash": {
-      "path": "/app/bin/host-spawn",
-      "args": ["bash"],
-      "icon": "terminal-bash",
-      "overrideName": true
-    },
+   "terminal.integrated.defaultProfile.linux": "zsh (login)",
+   "terminal.integrated.fontFamily": "MesloLGS NF",
 {{- end }}
     "telemetry.telemetryLevel": "off"
 }
