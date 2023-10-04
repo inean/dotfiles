@@ -1,5 +1,14 @@
 {
     "window.titleBarStyle": "custom",
     "dev.containers.dockerPath": "podman",
+{{- if .pkgs.flatpak }}
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "zsh": {
+      "path": "/app/bin/host-spawn",
+      "args": ["zsh"],
+      "icon": "terminal-zsh",
+      "overrideName": true
+    },
+{{- end }}
     "telemetry.telemetryLevel": "off"
 }

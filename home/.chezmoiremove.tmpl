@@ -10,11 +10,14 @@
 .histfile
 .mozilla
 .oh-my-zsh
-.pki
 .profile
 .viminfo
-.vscode
 .zcompdump**
 .zsh_history
 .zsh_sessions
 .zshrc.bak
+
+{{- if ne .chezmoi.os "linux" }}
+.pki
+.vscode
+{{- end }}
