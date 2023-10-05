@@ -23,6 +23,9 @@ if ! flatpak list | grep -q "$FLATPAK_VSCODE"; then
     echo "Install flatpak vscode"
     flatpak install -y "$FLATPAK_VSCODE"            
 fi
+if ! flatpak override -u --show $FLATPAK_VSCODE | grep -q "XCURSOR"; then
+    flatpak override -u --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons $FLATPAK_VSCODE
+fi
 
 {{- if .core.docker }} 
 # Add permissions
