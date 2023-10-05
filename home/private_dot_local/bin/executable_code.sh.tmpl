@@ -56,10 +56,14 @@ copy_arg_with_parameter() {
     fi
 }
 
-# Override user_data_dir and extensions_dir if not present on command line
-add_user_data_dir=true
-{{- if ne .chezmoi.os "linux" }}
+# Set to true if we want to override user_data_dir and extensions_dir 
+# if not present on command line
+{{- if eq .chezmoi.os "darwin" }}
+add_user_data_dir=false
 add_extensions_dir=true
+{{- else }}
+add_user_data_dir=true
+add_extensions_dir=false
 {{- end }}
 
 # Because 'code' without any arguments opens the last workspace in the
@@ -187,12 +191,12 @@ new_args+=("--ozone-platform=wayland")
 {{- else }}
 if $add_extensions_dir ; then
    new_args+=("--extensions-dir")
-   new_args+=("${XDG_CACHE_HOME:-$HOME/.cache}/vscode")
+   new_args+=("${XDG_CACHE_HOME:-$HOME/.cache}/Code")
 fi
 {{- end }}
 if $add_user_data_dir ; then
     new_args+=("--user-data-dir")
-    new_args+=("${XDG_CONFIG_HOME:-$HOME/.config}/vscode")
+    new_args+=("${XDG_CONFIG_HOME:-$HOME/.config}/Code")
 fi
 
 if $add_new_window ; then
