@@ -37,3 +37,7 @@ set -ef -o pipefail
 {{    end }}
 {{- end }}
 
+# configure default apps
+xdg-settings set default-web-browser org.chromium.Chromium.desktop
+xdg-settings set default-url-scheme-handler mailto org.gnome.Evolution.desktop
+
