@@ -1,6 +1,7 @@
 {
     "editor.fontLigatures": true,
     "window.titleBarStyle": "custom",
+    "window.zoomLevel": 1,
     "dev.containers.dockerPath": "podman",
 {{- if .pkgs.flatpak }}
     "terminal.integrated.profiles.linux": {
