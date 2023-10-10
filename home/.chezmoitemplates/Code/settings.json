@@ -6,13 +6,13 @@
 {{- if .pkgs.flatpak }}
     "terminal.integrated.profiles.linux": {
       "zsh (login)": {
-        "path": "/app/bin/host-spawn",
+        "path": "host-spawn",
         "args": ["zsh", "-l"],
         "icon": "terminal-linux",
         "overrideName": true
       },
       "bash": {
-        "path": "/app/bin/host-spawn",
+        "path": "host-spawn",
         "args": ["bash"],
         "icon": "terminal-bash",
         "overrideName": true

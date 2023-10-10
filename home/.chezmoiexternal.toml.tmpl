@@ -88,13 +88,23 @@
     stripComponents = 1
     refreshPeriod = "168h"
 
-# Update macos keybindings
 {{- if .core.coding }}
+
 {{-   if ne .chezmoi.os "darwin" }}
-{{      $templateDir := joinPath (substr (add 1 (len .chezmoi.homeDir) | int) -1 .chezmoi.sourceDir) "/.chezmoitemplates" }}
+
+# Keybindings to mimic MacOS ones on linux desktops
+{{ $templateDir := joinPath (substr (add 1 (len .chezmoi.homeDir) | int) -1 .chezmoi.sourceDir) "/.chezmoitemplates" }}
 [ "{{ $templateDir }}/Code/macos.keybindings.json" ]
     type = "file"
     url = "https://raw.githubusercontent.com/codebling/vs-code-default-keybindings/master/macos.keybindings.json"
     refreshPeriod = "24h"
-{{-   end }}
+
+# VSCode launcher for linux
+[".cache/toolbox-vscode"]
+    type = "git-repo"
+    url = "https://github.com/inean/toolbox-vscode.git"
+    refreshPeriod = "168h"
+
+{{- end }}
+
 {{- end }}
