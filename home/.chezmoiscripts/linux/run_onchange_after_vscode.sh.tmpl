@@ -3,16 +3,12 @@
 
 FLATPAK_VSCODE_RUNTIME="org.freedesktop.Sdk/x86_64/22.08"
 FLATPAK_VSCODE="com.visualstudio.code"
-FLATPAK_VSCODE_BIN_DIR="$HOME/.var/app/com.visualstudio.code/data/node_modules/bin"
+FLATPAK_VSCODE_BIN_DIR="/var/lib/flatpak/app/$FLATPAK_VSCODE/current/active/files/bin"
 
 set -ef -o pipefail
 
 echo "After: Install vscode"
 
-# test for host-spawn
-if [ ! -f $FLATPAK_VSCODE_BIN_DIR/host-spawn ]; then
-    echo "Missing host-spawn" || exit 1
-fi
 # install runtime so we get latest vscode
 if ! flatpak list | grep -q "$FLATPAK_VSCODE_RUNIME"; then
     echo "Install flatpak runtime"
@@ -23,22 +19,21 @@ if ! flatpak list | grep -q "$FLATPAK_VSCODE"; then
     echo "Install flatpak vscode"
     flatpak install -y "$FLATPAK_VSCODE"            
 fi
+# test for host-spawn
+if [ ! -f $FLATPAK_VSCODE_BIN_DIR/host-spawn ]; then
+    echo "Missing host-spawn" || exit 1
+fi
+# Add XCURSOR_PATH so wayland HDPI icons show proper size
 if ! flatpak override -u --show $FLATPAK_VSCODE | grep -q "XCURSOR"; then
     flatpak override -u --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons $FLATPAK_VSCODE
 fi
+# Enable socket wayland. Required by --ozone-platform-hint=auto to work
+flatpak override -u --socket=wayland $FLATPAK_VSCODE
 
 {{- if .core.docker }} 
 # Add permissions
 if ! flatpak override -u --show $FLATPAK_VSCODE | grep -q "tmp"; then
     flatpak override -u --filesystem=/tmp $FLATPAK_VSCODE
-    flatpak override -u --socket=wayland $FLATPAK_VSCODE
-fi
-
-PODMAN=$(command -v podman)
-if [ ! -z $PODMAN ]; then
-    if [ ! -f "$FLATPAK_VSCODE_BIN_DIR/podman" ]; then
-        ln -s "$FLATPAK_VSCODE_BIN_DIR/host-spawn" "$FLATPAK_VSCODE_BIN_DIR/podman"
-    fi
 fi
 {{- end }}
 

@@ -97,12 +97,4 @@
     url = "https://raw.githubusercontent.com/codebling/vs-code-default-keybindings/master/macos.keybindings.json"
     refreshPeriod = "24h"
 {{-   end }}
-{{-   if eq .osid "fedora-silverblue" }}
-{{ $hotspawnVersion := "latest" }}
-[".var/app/com.visualstudio.code/data/node_modules/bin/host-spawn"]
-    type = "file"
-    url = "https://github.com/1player/host-spawn/releases/{{ $hotspawnVersion }}/download/host-spawn-x86_64"
-    executable = true
-    refreshPeriod = "168h"
-{{-   end }}
 {{- end }}
