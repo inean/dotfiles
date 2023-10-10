@@ -2,7 +2,11 @@
     "editor.fontLigatures": true,
     "window.titleBarStyle": "custom",
     "window.zoomLevel": 1,
+{{- if .pkgs.flatpak }}
+    "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
+{{- else }}
     "dev.containers.dockerPath": "podman",
+{{- end }}
 {{- if .pkgs.flatpak }}
     "terminal.integrated.profiles.linux": {
       "zsh (login)": {
