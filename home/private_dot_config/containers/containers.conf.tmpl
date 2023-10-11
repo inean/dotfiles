@@ -1,9 +1,11 @@
-{{- if and .core.coding (eq .chezmoi.osRelease.id "fedora") }}
+{{- if and .core.coding (eq .chezmoi.os "linux") }}
+{{- if (eq .chezmoi.osRelease.id "fedora") }}
 [containers]
 env = [
   "BUILDAH_FORMAT=docker"
 ]
 label = false
 userns = "keep-id"
+{{- end }}
 {{- end }}
 

@@ -8,9 +8,13 @@ Library/Application Support/Code/**
 
 {{ if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
-private_dot_cache/private_Code/**
-private_dot_config/private_Code/**
-private_dot_local/share/private_applications
+.cache/Code/**
+.config/Code/**
+.config/containers/**
+.local/bin/podman-host
+.local/bin/host-spawn
+.local/share/applications
+.var/**
 {{ end }}
 
 {{ if not .core.personal }}

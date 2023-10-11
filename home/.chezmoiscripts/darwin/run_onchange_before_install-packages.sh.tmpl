@@ -85,7 +85,7 @@
         `"vlc"`
         `"whatsapp"`
         ) -}}
-     {{- if and (eq .chezmoi.os "darwin") (le "14" (substr 7 9 .osid)) -}}
+     {{- if and (eq .chezmoi.os "darwin") (le "15" (substr 7 9 .osid)) -}}
      {{- $casks = concat $casks (list
        `"vagrant-vmware-utility"`
        `"vmware-fusion"`

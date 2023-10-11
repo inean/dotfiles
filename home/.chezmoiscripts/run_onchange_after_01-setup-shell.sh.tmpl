@@ -22,7 +22,7 @@ cur_shell=$SHELL
 tar_shell=$(command -v zsh >/dev/null && echo zsh || echo bash)
 if [ ! -x "${cur_shell}" ] || [[ ${cur_shell} != *"${tar_shell}"* ]]; then
     echo "Changing the login shell to ${tar_shell}..."
-    {{- if eq .chezmoi.osRelease.id "fedora" }}
+    {{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "fedora") }}
     sudo usermod -s "$(which ${tar_shell})" $USER
     {{- else }}
     sudo chsh -s "$(which ${tar_shell})" $USER
