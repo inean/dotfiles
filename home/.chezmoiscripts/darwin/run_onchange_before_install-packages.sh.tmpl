@@ -1,6 +1,7 @@
 {{- /* # Boostrap packages */ -}}
 {{- $brews := list -}}
 {{- $casks := list -}}
+{{- $local_casks := list -}}
 
 {{- /* # Core packages */ -}}
 {{- $brews = concat $brews (list
@@ -52,6 +53,8 @@
   {{- $casks = concat $casks (list
     `"firefox"`
     `"google-chrome"`
+    ) -}}
+  {{- $local_casks = concat $local_casks (list
     `"iterm2"`
     `"visual-studio-code"`
     ) -}}
@@ -75,18 +78,20 @@
       {{- end -}}
 
       {{- $casks = concat $casks (list
-        `"balenaetcher"`
-        `"gns3"`
         `"spotify"`
         `"telegram"`
-        `"ultimaker-cura"`
         `"unnaturalscrollwheels"`
-        `"vagrant"`
         `"vlc"`
         `"whatsapp"`
         ) -}}
+      {{- $local_casks = concat $local_casks (list
+        `"ultimaker-cura"`
+        `"balenaetcher"`
+        `"gns3"`
+        `"vagrant"`
+        ) -}}
      {{- if and (eq .chezmoi.os "darwin") (le "15" (substr 7 9 .osid)) -}}
-     {{- $casks = concat $casks (list
+     {{- $local_casks = concat $local_casks (list
        `"vagrant-vmware-utility"`
        `"vmware-fusion"`
        ) -}}
@@ -155,6 +160,9 @@ brew {{ . }}
 {{ end -}}
 {{ range ($casks | sortAlpha | uniq) -}}
 cask {{ . }}
+{{ end -}}
+{{ range ($local_casks | sortAlpha | uniq) -}}
+cask {{ . }}, args: { appdir: "$HOME/Applications" }
 {{ end -}} 
 EOF
 
@@ -165,7 +173,7 @@ brew bundle install --no-upgrade --no-lock --file=$BREWFILE
 brew bundle cleanup --force --file=$BREWFILE
 
 {{ if .core.personal -}}
-# Switch to using brew-installed bash as default insteand of systemn bash shell
+# Switch to using brew-installed bash as default instead of system bash shell
 if ! fgrep -q "${HOMEBREW_PREFIX}/bin/bash" /etc/shells; then
   echo "${HOMEBREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
 fi;
