@@ -1,33 +1,35 @@
-{{- $extensions := list -}}
+{{- $extensions := list
+     "MS-CEINTL.vscode-language-pack-es"
+-}}
 
+{{- $old_extensions := list -}}
 {{- if .core.ephemeral -}}
-{{- $extensions = concat $extensions (list
+{{- $old_extensions = concat $old_extensions (list
      "stkb.rewrap"
      "ms-python.python"
-     "MS-CEINTL.vscode-language-pack-es"
      "yzhang.markdown-all-in-one")
 -}}
 {{- end -}}
 
 {{- if .core.personal -}}
 {{- $extensions = concat $extensions (list
+     "ms-vscode-remote.remote-containers"
+)}}
+{{- $old_extensions = concat $old_extensions (list
      "bungcip.better-toml"
      "DavidAnson.vscode-markdownlint"
      "devMike.mikrotik-routeros-script"
      "EditorConfig.EditorConfig"
      "foxundermoon.shell-format"
      "GitHub.copilot"
-     "GitHub.copilot-labs"
      "hashicorp.hcl"
      "mads-hartmann.bash-ide-vscode"
      "mesonbuild.mesonbuild"
      "ms-azuretools.vscode-docker"
-     "MS-CEINTL.vscode-language-pack-es"
      "ms-python.python"
      "ms-python.isort"
      "ms-python.python"
      "ms-python.vscode-pylance"
-     "ms-vscode-remote.remote-containers"
      "ms-vscode-remote.remote-ssh"
      "ms-vscode-remote.remote-ssh-edit"
      "ms-vscode-remote.vscode-remote-extensionpack"
@@ -42,16 +44,28 @@
 -}}
 {{- end -}}
 
+{{ if len $extensions  -}}
 #!/bin/sh
 
-set -eux
+set -eu -o pipefail
 
-{{ if len $extensions  -}}
-  if [ "$(command -v code)" ]; then
-  {{ range $extensions -}}
-    code --user-data-dir="${XDG_CONFIG_HOME}/vscode"  \
-         --extensions-dir="${XDG_CACHE_HOME}/vscode"  \
-         --force --install-extension {{ . }}
-  {{ end -}}
-  fi
-{{ end }}
+if command -v code >/dev/null; then
+  {{- $installed_extensions := splitList " " (output "sh" "-c" "code.sh --list-extensions | tr '\n' ' '" | trim) }}
+    # Purge extensions not listed here
+  {{- range $installed_extensions }}
+    {{- if not (has . $extensions) }} 
+    code --force --uninstall-extension "{{ . }}"
+    {{- end }}
+  {{- end }}
+
+    # Install missing extensions
+  {{- range $extensions }}
+    {{- if not (has . $installed_extensions) }}
+    code --force --install-extension "{{ . }}"
+    {{- end }}
+  {{- end }}
+    # Just ensure this conditional is not empty...
+    :
+fi
+{{- end }}
+
