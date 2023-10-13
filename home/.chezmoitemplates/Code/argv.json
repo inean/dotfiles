@@ -10,12 +10,24 @@
 	// This can help in cases where you see rendering issues in VS Code.
 	// "disable-hardware-acceleration": true,
 
+	// Enabled by default by VS Code to resolve color issues in the renderer
+	// See https://github.com/microsoft/vscode/issues/51791 for details
+	"disable-color-correct-rendering": true,
+
+{{- if eq .chezmoi.os "linux" }}
+	// On fedora silverlblue gnome-libsecrets segfauls. Defaults to 
+	// gnome-keyring instead
+	"password-store": "gnome-keyring",
+{{- end }}
+{{- if eq .chezmoi.os "darwin" }}
+	// Use same extensions dir than linux flatpak
+	"extensions_dir": "${XDG_DATA_HOME:-$HOME/.local/share}/vscode/extensions",
+{{- end }}
+
 	// Allows to disable crash reporting.
 	// Should restart the app if the value is changed.
-	"enable-crash-reporter": true,
-
-	// Unique id used for correlating crash reports sent from this instance.
-	// Do not edit this value.
-	"crash-reporter-id": "96b5c052-7aab-4b47-a76c-2d30dd715e79",
+	"enable-crash-reporter": false,
+	
+	// Set locale to Spanish
 	"locale": "es"
 }
