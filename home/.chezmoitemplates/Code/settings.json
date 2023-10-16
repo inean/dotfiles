@@ -2,8 +2,8 @@
   // Editor settings
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file",
   "editor.formatOnType": true,
+  "editor.formatOnSaveMode": "file",
   "editor.fontLigatures": true,
 
   // Window settings
@@ -37,8 +37,8 @@
     "LD_PRELOAD": null,
   },
   "terminal.integrated.defaultProfile.linux": "zsh (login)",
+  {{- end }}
   "terminal.integrated.fontFamily": "MesloLGS NF",
-{{- end }}
 
   // Disable telemetry
   "telemetry.telemetryLevel": "off"

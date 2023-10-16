@@ -6,19 +6,11 @@
 //
 // NOTE: Changing this file requires a restart of VS Code.
 {
-	// Enabled by default by VS Code to resolve color issues in the renderer
-	// See https://github.com/microsoft/vscode/issues/51791 for details
-	"disable-color-correct-rendering": true,
-
 {{- if eq .chezmoi.os "linux" }}
 	// On fedora silverlblue gnome-libsecrets segfauls. Defaults to 
 	// gnome-keyring instead
 	"password-store": "gnome-keyring",
 {{- end }}
-
-	// Allows to disable crash reporting.
-	// Should restart the app if the value is changed.
-	"enable-crash-reporter": false,
 
 {{- if .core.personal }}
 	// Set locale to Spanish
@@ -27,5 +19,9 @@
 
 	// Use software rendering instead of hardware accelerated rendering.
 	// This can help in cases where you see rendering issues in VS Code.
-	// "disable-hardware-acceleration": true
+	// "disable-hardware-acceleration": true,
+
+	// Allows to disable crash reporting.
+	// Should restart the app if the value is changed.
+	"enable-crash-reporter": false
 }

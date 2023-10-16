@@ -71,14 +71,14 @@ if command -v code >/dev/null; then
     # Purge extensions not listed here
   {{- range $installed_extensions }}
     {{- if not (has . $extensions) }} 
-    code --force --uninstall-extension "{{ . }}"
+    code --uninstall-extension "{{ . }}"
     {{- end }}
   {{- end }}
 
     # Install missing extensions
   {{- range $extensions }}
     {{- if not (has . $installed_extensions) }}
-    code --force --install-extension "{{ . }}"
+    code --install-extension "{{ . }}"
     {{- end }}
   {{- end }}
     # Just ensure this conditional is not empty...
