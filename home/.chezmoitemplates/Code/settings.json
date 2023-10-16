@@ -1,32 +1,45 @@
 {
-    "editor.fontLigatures": true,
-    "window.titleBarStyle": "custom",
-    "window.zoomLevel": 1,
+  // Editor settings
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnType": true,
+  "editor.fontLigatures": true,
+
+  // Window settings
+  "window.titleBarStyle": "custom",
+
+  // Terminal settings
+{{- if eq .chezmoi.os "linux" }}
+  "window.zoomLevel": 1,
+{{- end }}
 {{- if .pkgs.flatpak }}
-    "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
+  "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
 {{- else }}
-    "dev.containers.dockerPath": "podman",
+  "dev.containers.dockerPath": "podman",
 {{- end }}
 {{- if .pkgs.flatpak }}
-    "terminal.integrated.profiles.linux": {
-      "zsh (login)": {
-        "path": "host-spawn",
-        "args": ["zsh", "-l"],
-        "icon": "terminal-linux",
-        "overrideName": true
-      },
-      "bash": {
-        "path": "host-spawn",
-        "args": ["bash"],
-        "icon": "terminal-bash",
-        "overrideName": true
-      },
+  "terminal.integrated.profiles.linux": {
+    "zsh (login)": {
+      "path": "host-spawn",
+      "args": ["zsh", "-l"],
+      "icon": "terminal-linux",
+      "overrideName": true
     },
-    "terminal.integrated.env.linux": {
-      "LD_PRELOAD": null,
+    "bash": {
+      "path": "host-spawn",
+      "args": ["bash"],
+      "icon": "terminal-bash",
+      "overrideName": true
     },
-   "terminal.integrated.defaultProfile.linux": "zsh (login)",
-   "terminal.integrated.fontFamily": "MesloLGS NF",
+  },
+  "terminal.integrated.env.linux": {
+    "LD_PRELOAD": null,
+  },
+  "terminal.integrated.defaultProfile.linux": "zsh (login)",
+  "terminal.integrated.fontFamily": "MesloLGS NF",
 {{- end }}
-    "telemetry.telemetryLevel": "off"
+
+  // Disable telemetry
+  "telemetry.telemetryLevel": "off"
 }

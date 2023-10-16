@@ -1,0 +1,6 @@
+{{- if eq .chezmoi.os "darwin" }}
+{{ .chezmoi.homeDir }}/Applications/code-portable-data
+{{- else }}
+{{ .chezmoi.homeDir}}/.config/Code
+{{- end }}
+

@@ -1,27 +1,45 @@
-{{- $extensions := list
-     "MS-CEINTL.vscode-language-pack-es"
--}}
+{{- /* Go Template */ -}}
+{{- $extensions := list -}}
+{{- $profile_extensions := dict -}}
 
 {{- $old_extensions := list -}}
+
 {{- if .core.ephemeral -}}
-{{- $old_extensions = concat $old_extensions (list
-     "stkb.rewrap"
-     "ms-python.python"
-     "yzhang.markdown-all-in-one")
--}}
-{{- end -}}
+{{- end }}
 
 {{- if .core.personal -}}
 {{- $extensions = concat $extensions (list
-     "ms-vscode-remote.remote-containers"
+     "stkb.rewrap"  
+     "yzhang.markdown-all-in-one"
+     "MS-CEINTL.vscode-language-pack-es"
 )}}
+
+{{- /* This should go into it's own profile... */ -}}
+{{- if .core.coding -}}
+{{- $extensions = concat $extensions (list
+     "actboy168.tasks"
+     "GitHub.copilot"
+     "GitHub.copilot-chat"
+     "ms-vscode-remote.remote-containers"
+     "mutantdino.resourcemonitor"
+     "tamasfe.even-better-toml" 
+)}}
+{{- end }}
+
+{{- if .flavors.rust -}}
+{{- $_ := set $profile_extensions "rust" (list
+     "rust-lang.rust-analyzer"
+     "vadimcn.vscode-lldb"
+     "serayuzgur.crates"
+)}}
+{{- end }}
+
 {{- $old_extensions = concat $old_extensions (list
      "bungcip.better-toml"
      "DavidAnson.vscode-markdownlint"
      "devMike.mikrotik-routeros-script"
      "EditorConfig.EditorConfig"
      "foxundermoon.shell-format"
-     "GitHub.copilot"
      "hashicorp.hcl"
      "mads-hartmann.bash-ide-vscode"
      "mesonbuild.mesonbuild"
@@ -35,7 +53,6 @@
      "ms-vscode-remote.vscode-remote-extensionpack"
      "redhat.vscode-yaml"
      "rust-lang.rust-analyzer"
-     "stkb.rewrap"
      "streetsidesoftware.code-spell-checker"
      "twpayne.vscode-testscript"
      "Tyriar.sort-lines"
@@ -50,7 +67,7 @@
 set -eu -o pipefail
 
 if command -v code >/dev/null; then
-  {{- $installed_extensions := splitList " " (output "sh" "-c" "code.sh --list-extensions | tr '\n' ' '" | trim) }}
+  {{- $installed_extensions := splitList " " (output "sh" "-c" "code --list-extensions | tr '\n' ' '" | trim) }}
     # Purge extensions not listed here
   {{- range $installed_extensions }}
     {{- if not (has . $extensions) }} 

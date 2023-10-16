@@ -11,7 +11,6 @@ export GIT_EDITOR="$EDITOR"
 if (( $+commands[code] )); then
   export EDITOR='code'
   export GIT_EDITOR="$EDITOR -w"
-  alias code="code --user-data-dir='${XDG_CONFIG_HOME}/vscode' --extensions-dir='${XDG_CACHE_HOME}/vscode'"
 fi
 
 # Convenience aliases.
