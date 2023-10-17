@@ -1,1 +1,3 @@
+{{- if ne .chezmoi.os "darwin" }} 
 {{- template "Code/macos.keybindings.json" . -}}
+{{- end }}

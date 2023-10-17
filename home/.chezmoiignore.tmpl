@@ -8,11 +8,10 @@ Applications/**
 
 {{ if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
-.cache/Code/**
-.config/Code/**
 .config/containers/**
-.local/bin/podman-host
+.local/bin/code
 .local/bin/host-spawn
+.local/bin/podman-host
 .local/share/applications
 .var/**
 {{ end }}

@@ -66,6 +66,15 @@
 
 set -eu -o pipefail
 
+{{- if .pkgs.flatpak }}
+# add an alias to flatpak code so we can find it
+if flatpak list | grep -q "com.visualstudio.code"; then
+  if ! command -v code >/dev/null; then
+    alias code="flatpak run com.visualstudio.code"
+  fi
+fi
+{{- end }}
+
 if command -v code >/dev/null; then
   {{- $installed_extensions := splitList " " (output "sh" "-c" "code --list-extensions | tr '\n' ' '" | trim) }}
     # Purge extensions not listed here
