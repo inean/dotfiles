@@ -1,70 +1,10 @@
-# vim: filetype=toml
-
 # Shell configuration helper
 [".config/xsh"]
     type = "archive"
     url = "https://github.com/simifalaye/xsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
-
-{{- if .core.personal }}
-# Age
-{{ $ageVersion := "1.1.1" -}}
-[".local/bin/age"]
-    type = "archive-file"
-    url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
-    path = "age/age"
-{{- end }}
-
-{{- if not .core.headless }}
-{{-   $fontDir := "" }}
-{{-   if eq .chezmoi.os "darwin" }}
-{{-     $fontDir = "Library/Fonts" }}
-{{-   else if eq .chezmoi.os "linux" }}
-{{-     $fontDir = ".local/share/fonts" }}
-{{-   end }}
-
-# Terminal Themes for Darwin
-# See https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/schemes for more options
-{{-   if eq .chezmoi.os "darwin" }}
-{{-   range (list
-        "Atom"
-        "Github"
-        "GitHub Dark") }}
-[".config/themes/{{ . }}/terminal/{{ . }}.terminal"]
-    type="file"
-    url="https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/terminal/{{ . }}.terminal"
     refreshPeriod = "168h"
-[".config/themes/{{ . }}/iterm2/{{ . }}.itermcolors"]
-    type="file"
-    url="https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/{{ . }}.itermcolors"
-    refreshPeriod = "168h"
-{{-   end }}
-{{-  end }}
-
-# Install MesloLGS fonts
-{{-   range (list
-        "MesloLGS NF Regular.ttf"
-        "MesloLGS NF Bold.ttf"
-        "MesloLGS NF Italic.ttf"
-        "MesloLGS NF Bold Italic.ttf") }}
-["{{ $fontDir }}/{{ . }}"]
-    type = "file"
-    url = "https://github.com/romkatv/powerlevel10k-media/raw/master/{{ . }}"
-    refreshPeriod = "168h"
-{{-   end }}
-
-#Install Fira Code fonts
-{{-   range (list
-        "FiraCodeNerdFont-Regular.ttf"
-        "FiraCodeNerdFontMono-Regular.ttf") }}
-["{{ $fontDir }}/{{ . }}"]
-    type = "file"
-    url = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Regular/{{ . }}"
-    refreshPeriod = "168h"
-{{-   end }}
-
-{{- end }}
 
 # Zsh Plugins
 [".cache/zsh/plugins/alias-tips"]
@@ -88,9 +28,74 @@
     stripComponents = 1
     refreshPeriod = "168h"
 
+{{- if not .core.headless }}
+
+#  Fonts
+{{-   $fontDir := "" }}
+{{-   if eq .chezmoi.os "darwin" }}
+{{-     $fontDir = "Library/Fonts" }}
+{{-   else if eq .chezmoi.os "linux" }}
+{{-     $fontDir = ".local/share/fonts" }}
+{{-   end }}
+
+# MesloLGS fonts
+{{-   range (list
+        "MesloLGS NF Regular.ttf"
+        "MesloLGS NF Bold.ttf"
+        "MesloLGS NF Italic.ttf"
+        "MesloLGS NF Bold Italic.ttf") }}
+["{{ $fontDir }}/{{ . }}"]
+    type = "file"
+    url = "https://github.com/romkatv/powerlevel10k-media/raw/master/{{ . }}"
+    refreshPeriod = "168h"
+{{-   end }}
+
+# FiraCode fonts
+{{-   range (list
+        "FiraCodeNerdFont-Regular.ttf"
+        "FiraCodeNerdFontMono-Regular.ttf") }}
+["{{ $fontDir }}/{{ . }}"]
+    type = "file"
+    url = "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Regular/{{ . }}"
+    refreshPeriod = "168h"
+{{-   end }}
+
+{{- end }}
+
+{{- if .core.personal }}
+
+# Age
+{{ $ageVersion := "1.1.1" }}
+[".local/bin/age"]
+    type = "archive-file"
+    url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+    path = "age/age"
+    refreshPeriod = "168h"
+
+# Linux specific helpers
+{{- if eq .chezmoi.os "linux" }}
+
+{{- end }}
+
+# Terminal Themes for Darwin
+{{-   if eq .chezmoi.os "darwin" }}
+{{-   range (list
+        "Atom"
+        "Github"
+        "GitHub Dark") }}
+[".config/themes/{{ . }}/terminal/{{ . }}.terminal"]
+    type="file"
+    url="https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/terminal/{{ . }}.terminal"
+    refreshPeriod = "168h"
+{{-   end }}
+{{-  end }}
+
+{{- end }}
+
 {{- if .core.coding }}
 
-{{-   if ne .chezmoi.os "darwin" }}
+# Linux specific helpers
+{{-   if eq .chezmoi.os "linux" }}
 
 # Keybindings to mimic MacOS ones on linux desktops
 {{ $templateDir := joinPath (substr (add 1 (len .chezmoi.homeDir) | int) -1 .chezmoi.sourceDir) "/.chezmoitemplates" }}
