@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -u -o pipefail
+
+# Trace changes on dconf database ond local template. If any changes, apply this script
+# {{- output "dconf" "dump" "/"  | sha256sum }}
+# {{- output "cat"  ( joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf") | sha256sum }}
+
+if [ -t 0 ]; then
+    # store current dconf database and conf into a temporay file...
+    source_dconf=$(mktemp --suffix=_source)
+    cat {{ joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf" }} > "$source_dconf"
+    target_dconf=$(mktemp --suffix=_target)
+    dconf dump / > "$target_dconf"
+
+    # show different keys and remove temporary files
+    diff -u --color $target_dconf $source_dconf
+    
+    # If different, ask user if he wants to apply changes
+    if [ $? -ne 0 ]; then
+        read -p "Do you want to override changes? [y/N] " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "Applying changes..."
+            dconf reset -f / # reset dconf database
+            dconf load / < {{ joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf" }}
+        fi
+    fi
+    rm "$source_dconf" "$target_dconf"
+fi

@@ -1,0 +1,25 @@
+[org/gnome/desktop/input-sources]
+sources=[('xkb', 'es')]
+
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+toolkit-accessibility=false
+
+[org/gnome/login-screen]
+enable-fingerprint-authentication=true
+enable-password-authentication=true
+enable-smartcard-authentication=false
+
+[org/gnome/mutter]
+experimental-features=['scale-monitor-framebuffer']
+
+[org/gnome/shell]
+favorite-apps=['org.gnome.Terminal.desktop', 'com.visualstudio.code.desktop', 'org.chromium.Chromium.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Software.desktop']
+welcome-dialog-last-shown-version='44.5'
+
+[org/gnome/shell/weather]
+automatic-location=true
+locations=[<(uint32 2, <('Salamanca', 'LESA', true, [(0.71471232869167789, -0.09599310885968812)], [(0.71500322271810779, -0.098611102737679618)])>)>]
+
+[org/gnome/software]
+first-run=false
