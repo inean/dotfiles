@@ -1,0 +1,137 @@
+#
+# Fetch information about a public IP address.
+#
+
+
+# Download file pointed by url and save it to a temporary file
+# $1: extension_pk
+# $2: shell_version (e.g. 3.36). May be omitted
+# returns: extension uuid and path to the downloaded file
+#
+
+_fetch_extension() {
+  extension_pk=$1
+  gnome_shell_version=$2
+  if [ -z "$gnome_shell_version" ]; then
+    gnome_shell_version=$(gnome-shell --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
+  fi
+  params="pk=$extension_pk&shell_version=$gnome_shell_version"
+  extension=$(curl -Lfs "$_store_url/extension-info/?$params")
+  if [ -z "$extension" ]; then
+    return 1
+  fi
+  extension_uuid=$(echo "$extension" | jq '.uuid' | cut -d '"' -f 2)
+  if ! extension_download_url=$(echo "$extension" | jq -e '.download_url' | cut -d '"' -f 2); then
+    echo "Missing download_url for extension $extension_pk"
+    return 1
+  fi
+  if ! extension_version=$(echo "$extension"| jq -e --arg v $gnome_shell_version '.shell_version_map[$v].version'); then
+    echo "Extension $extension_pk is not compatible with GNOME Shell $gnome_shell_version"
+    return 1
+  fi
+  # Fetch extension
+  file_path="$(mktemp -d)/$extension_uuid.zip"
+  curl -Lfs "${_store_url}${extension_download_url}" -o "$file_path"
+  # Return array
+  echo "$extension_uuid:$file_path"
+  return 0
+}
+
+# Install extension from an array
+# $1: extension_uuid
+# $2: file_path
+#
+_install_extension() {
+  local extension_uuid="$1"
+  local file_path="$2"
+  if [ -d "$_store_path/$extension_uuid" ]; then
+    # remove existing extension
+    rm -rf "$_store_path/$extension_uuid"
+  fi
+  mkdir -p "$_store_path/$extension_uuid" 
+  # Install extension
+  if [ -t 0 ]; then
+    gnome-extensions install --force "$file_path"
+    if ! gnome-extensions list | grep --quiet "$extension_uuid"; then
+      busctl --user call org.gnome.Shell.Extensions /org/gnome/Shell/Extensions org.gnome.Shell.Extensions InstallRemoteExtension s "$extension_uuid"
+    fi
+    gnome-extensions enable "$extension_uuid"
+  else 
+    unzip -q "$file_path" -d "$_store_path/$extension_uuid"
+    gnome-extensions enable "$extension_uuid"
+    # Restart gnome shell
+    busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Extensions ReloadExtension s "$extension_uuid"
+    busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting…")'
+  fi
+}
+
+# Find extension id from an array of known extensions
+# $1: extension_name
+# returns: extension_id
+#
+_find_extension() {
+  for extension in "${_store_extensions[@]}"; do
+    if [ "$1" = "${extension#*:}" ]; then
+      echo "${extension%%:*}"
+      break
+    fi
+  done
+  return 1
+}
+
+# Allowed extensions to be installed by Gex
+_store_url="https://extensions.gnome.org"
+_store_path="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions"
+_store_extensions=(
+    "307:dash-on-dock"
+    "841:freon"
+    "3843:just-perfecition"
+    "4356:top-bar-organizer"
+    "5060:xremap"
+)
+
+while (( $# > 0 )); do
+  case $1 in
+    -h|--help)
+      echo "Usage: gext COMMAND [ARGS...]"
+      echo ''
+      echo 'Options:'
+      echo '  list      List you installed extensions'
+      echo '  enable    Enable an extension'
+      echo '  disable   Disable an extension'
+      echo '  install   Install an extension'
+      echo '  uninstall Uninstall an extension'
+      echo '  prefs     Open the preferences dialog for an extension'
+      echo '  info      Show information about an extension'
+      echo '  update    Update an extension'
+      return 0
+      ;;
+    install)
+      if [ -z "$2" ]; then
+        echo "Usage: gext install EXTENSION_NAME"
+        return 1
+      fi
+      extension_name="$2"
+      if extension_id=$(_find_extension $extension_name); then
+        echo "Extension $extension_name not found"
+        return 1
+      fi
+      if ! extension=$(_fetch_extension $extension_id); then
+        return 1
+      fi
+      extension_file=${extension#*:}
+      extension_uuid=${extension%%:*}
+      _install_extension "$extension_uuid" "$extension_file"
+      rm $extension_file
+      return 0
+      ;;
+      *)
+      echo "'$1' command not yet implemented"
+      return 1
+      ;;
+  esac
+  
+  shift
+done
+echo "No extension specified"
+print
