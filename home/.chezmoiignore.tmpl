@@ -9,10 +9,13 @@ Applications/**
 {{ if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
 .config/containers/**
+.config/xremap-gnome/**
 .local/bin/code
 .local/bin/host-spawn
 .local/bin/podman-host
+.local/bin/xremap
 .local/share/applications
+.local/share/systemd/**
 .var/**
 {{ end }}
 

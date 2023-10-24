@@ -1,0 +1,11 @@
+[Unit]
+Description=GNOME -> macOS Remap
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=30
+ExecStart={{ .chezmoi.homeDir }}/.local/bin/xremap {{ .chezmoi.homeDir }}/.config/xremap-gnome/config.yml
+
+[Install]
+WantedBy=default.target

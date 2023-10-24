@@ -75,6 +75,13 @@
 # Linux specific helpers
 {{- if eq .chezmoi.os "linux" }}
 
+# Download corresponding archive
+{{ $xremapFlavor:= "gnome" }}
+[".local/bin/xremap"]
+    type = "archive-file"
+    url = "https://github.com/k0kubun/xremap/releases/latest/download/xremap-{{ .chezmoi.os }}-x86_64-{{ $xremapFlavor }}.zip"
+    path = "xremap"
+    refreshPeriod = "168h"
 {{- end }}
 
 # Terminal Themes for Darwin
