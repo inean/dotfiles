@@ -5,6 +5,12 @@ sources=[('xkb', 'es')]
 color-scheme='prefer-dark'
 toolkit-accessibility=false
 
+[org/gnome/desktop/wm/keybindings]
+switch-input-source=@as []
+switch-input-source-backward=@as []
+switch-panels=@as []
+switch-panels-backward=@as []
+
 [org/gnome/login-screen]
 enable-fingerprint-authentication=true
 enable-password-authentication=true
@@ -12,6 +18,19 @@ enable-smartcard-authentication=false
 
 [org/gnome/mutter]
 experimental-features=['scale-monitor-framebuffer']
+
+[org/gnome/settings-daemon/plugins/media-keys]
+decrease-text-size=@as []
+help=@as []
+increase-text-size=@as []
+magnifier=@as []
+magnifier-zoom-in=@as []
+magnifier-zoom-out=@as []
+on-screen-keyboard=@as []
+screenreader=@as []
+screensaver=['<Control><Super>q']
+toggle-contrast=@as []
+toggle-overview=@as []
 
 [org/gnome/shell]
 {{- $extensions:=joinPath  .chezmoi.homeDir ".local/share/gnome-shell/extensions" }}
@@ -61,6 +80,10 @@ window-demands-attention-focus=true
 world-clock=false
 {{- end }}
 
+[org/gnome/shell/keybindings]
+focus-active-notification=@as []
+toggle-message-tray=@as []
+
 [org/gnome/shell/weather]
 automatic-location=true
 locations=[<(uint32 2, <('Salamanca', 'LESA', true, [(0.71471232869167789, -0.09599310885968812)], [(0.71500322271810779, -0.098611102737679618)])>)>]
@@ -69,4 +92,31 @@ locations=[<(uint32 2, <('Salamanca', 'LESA', true, [(0.71471232869167789, -0.09
 first-run=false
 
 [org/gnome/terminal/legacy/keybindings]
-new-tab='<Super>N'
+close-tab='<Super>w'
+close-window='<Shift><Super>w'
+copy='<Super>c'
+find='<Super>f'
+find-clear='disabled'
+find-next='<Super>g'
+find-previous='<Shift><Super>g'
+full-screen='<Primary><Super>f'
+move-tab-left='disabled'
+move-tab-right='disabled'
+new-tab='<Super>t'
+new-window='<Super>N'
+next-tab='<Primary>Tab'
+paste='<Super>v'
+prev-tab='<Primary><Shift>Tab'
+switch-to-tab-1='disabled'
+switch-to-tab-10='disabled'
+switch-to-tab-2='disabled'
+switch-to-tab-3='disabled'
+switch-to-tab-4='disabled'
+switch-to-tab-5='disabled'
+switch-to-tab-6='disabled'
+switch-to-tab-7='disabled'
+switch-to-tab-8='disabled'
+switch-to-tab-9='disabled'
+zoom-in='<Super>plus'
+zoom-normal='disabled'
+zoom-out='<Super>minus'
