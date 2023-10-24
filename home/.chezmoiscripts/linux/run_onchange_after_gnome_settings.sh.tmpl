@@ -4,12 +4,12 @@ set -u -o pipefail
 
 # Trace changes on dconf database ond local template. If any changes, apply this script
 # {{- output "dconf" "dump" "/"  | sha256sum }}
-# {{- output "cat"  ( joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf") | sha256sum }}
+# {{- output "cat"  ( joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf.tmpl") | sha256sum }}
 
 if [ -t 0 ]; then
     # store current dconf database and conf into a temporay file...
     source_dconf=$(mktemp --suffix=_source)
-    cat {{ joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf" }} > "$source_dconf"
+    chezmoi execute-template < {{ joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf.tmpl" }} > "$source_dconf"
     target_dconf=$(mktemp --suffix=_target)
     dconf dump / > "$target_dconf"
 
@@ -21,9 +21,10 @@ if [ -t 0 ]; then
         read -p "Do you want to override changes? [y/N] " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "Reset dconf database..."
+            dconf reset -f / 
             echo "Applying changes..."
-            dconf reset -f / # reset dconf database
-            dconf load / < {{ joinPath .chezmoi.sourceDir ".chezmoitemplates/Gnome/dconf" }}
+            dconf load -f  / < "$source_dconf"
         fi
     fi
     rm "$source_dconf" "$target_dconf"
