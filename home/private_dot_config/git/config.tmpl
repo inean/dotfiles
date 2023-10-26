@@ -179,4 +179,6 @@
 [include]
     path = alias
     path = config.local
+{{ if lookPath "delta" -}}
     path = delta
+{{ end -}}
