@@ -30,7 +30,6 @@ on-screen-keyboard=@as []
 screenreader=@as []
 screensaver=['<Control><Super>q']
 toggle-contrast=@as []
-toggle-overview=@as []
 
 [org/gnome/shell]
 {{- $extensions:=joinPath  .chezmoi.homeDir ".local/share/gnome-shell/extensions" }}
@@ -83,6 +82,7 @@ world-clock=false
 [org/gnome/shell/keybindings]
 focus-active-notification=@as []
 toggle-message-tray=@as []
+toggle-overview=@as []
 
 [org/gnome/shell/weather]
 automatic-location=true

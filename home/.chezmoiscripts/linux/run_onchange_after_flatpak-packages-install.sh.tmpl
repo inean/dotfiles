@@ -1,6 +1,6 @@
-{{- $fedora_packs := list -}}
+{{- $fedora_packs  := list -}}
 {{- $flathub_packs := list -}}
-{{- $remove_packs := list -}}
+{{- $remove_packs  := list -}}
 
 {{/* core packages */}}
 
@@ -12,6 +12,26 @@
 {{-   $flathub_packs = concat $flathub_packs (list
         `"org.chromium.Chromium"`
 ) -}}
+{{- end }}
+
+{{- if .core.coding }}
+{{- $fedora_packs = concat $fedora_packs (list
+        `"com.visualstudio.code"`
+        `"com.github.tchx84.Flatseal"`
+) -}}
+
+{{- if .flavors.go }}
+{{-   $flathub_packs = concat $flathub_packs (list
+        `"org.freedesktop.Sdk.Extension.golang//22.08"`
+) -}}
+{{- end }}
+
+{{- if .flavors.rust }}
+{{-   $flathub_packs = concat $flathub_packs (list
+        `"org.freedesktop.Sdk.Extension.rust-stable//22.08"`
+) -}}
+{{- end }}
+
 {{- end }}
 
 {{- $sudo := "sudo " -}}
@@ -36,8 +56,3 @@ set -ef -o pipefail
 (flatpak info {{ . }} > /dev/null 2>&1 && flatpak remove -y {{ . }} )
 {{    end }}
 {{- end }}
-
-# configure default apps
-xdg-settings set default-web-browser org.chromium.Chromium.desktop
-xdg-settings set default-url-scheme-handler mailto org.gnome.Evolution.desktop
-

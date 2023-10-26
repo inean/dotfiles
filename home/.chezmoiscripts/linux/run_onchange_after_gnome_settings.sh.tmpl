@@ -29,3 +29,12 @@ if [ -t 0 ]; then
     fi
     rm "$source_dconf" "$target_dconf"
 fi
+
+# configure default apps
+if flatpak info -l "org.chromium.Chromium" >/dev/null; then
+    xdg-settings set default-web-browser org.chromium.Chromium.desktop
+fi
+if flatpak info -l "org.gnome.Evolution" >/dev/null; then
+    xdg-settings set default-url-scheme-handler mailto org.gnome.Evolution.desktop
+fi
+
