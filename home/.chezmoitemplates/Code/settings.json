@@ -11,7 +11,7 @@
 
   // Terminal settings
 {{- if eq .chezmoi.os "linux" }}
-  "window.zoomLevel": 1,
+  "window.zoomLevel": 0.5,
 {{- end }}
 {{- if .pkgs.flatpak }}
   "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
@@ -22,13 +22,18 @@
   "terminal.integrated.profiles.linux": {
     "zsh (login)": {
       "path": "host-spawn",
-      "args": ["zsh", "-l"],
+      "args": [
+        "zsh",
+        "-l"
+      ],
       "icon": "terminal-linux",
       "overrideName": true
     },
     "bash": {
       "path": "host-spawn",
-      "args": ["bash"],
+      "args": [
+        "bash"
+      ],
       "icon": "terminal-bash",
       "overrideName": true
     },
@@ -41,5 +46,13 @@
   "terminal.integrated.fontFamily": "MesloLGS NF",
 
   // Disable telemetry
-  "telemetry.telemetryLevel": "off"
+  "telemetry.telemetryLevel": "off",
+
+  // Copilot Options
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": true,
+    "markdown": false,
+    "scminput": false
+  },
 }
