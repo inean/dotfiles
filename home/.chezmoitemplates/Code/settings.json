@@ -6,18 +6,21 @@
   "editor.formatOnSaveMode": "file",
   "editor.fontLigatures": true,
 
+  // Files settings
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
   // Window settings
   "window.titleBarStyle": "custom",
+
+  // Workbenck settings
+  "telemetry.telemetryLevel": "off",
 
   // Terminal settings
 {{- if eq .chezmoi.os "linux" }}
   "window.zoomLevel": 0.5,
 {{- end }}
-{{- if .pkgs.flatpak }}
-  "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
-{{- else }}
-  "dev.containers.dockerPath": "podman",
-{{- end }}
+
 {{- if .pkgs.flatpak }}
   "terminal.integrated.profiles.linux": {
     "zsh (login)": {
@@ -42,17 +45,27 @@
     "LD_PRELOAD": null,
   },
   "terminal.integrated.defaultProfile.linux": "zsh (login)",
-  {{- end }}
+{{- end }}
   "terminal.integrated.fontFamily": "MesloLGS NF",
 
-  // Disable telemetry
-  "telemetry.telemetryLevel": "off",
+  // Extensions Options
 
-  // Copilot Options
+  // DevContainers
+{{- if .pkgs.flatpak }}
+  "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
+{{- else }}
+  "dev.containers.dockerPath": "podman",
+{{- end }}
+  "dev.containers.autoRebuild": true,
+
+  // Copilot
   "github.copilot.enable": {
     "*": true,
     "plaintext": true,
     "markdown": false,
     "scminput": false
   },
+
+  // Json
+  "json.format.keepLines": true
 }
