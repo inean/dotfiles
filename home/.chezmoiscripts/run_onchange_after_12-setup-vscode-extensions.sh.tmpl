@@ -9,7 +9,7 @@
 
 {{- if .core.personal -}}
 {{- $extensions = concat $extensions (list
-     "stkb.rewrap"  
+     "stkb.rewrap"
      "yzhang.markdown-all-in-one"
      "MS-CEINTL.vscode-language-pack-es"
 )}}
@@ -20,9 +20,10 @@
      "actboy168.tasks"
      "GitHub.copilot"
      "GitHub.copilot-chat"
+     "ms-azuretools.vscode-docker@1.22.2"
      "ms-vscode-remote.remote-containers"
      "mutantdino.resourcemonitor"
-     "tamasfe.even-better-toml" 
+     "tamasfe.even-better-toml"
 )}}
 {{- end }}
 
@@ -77,16 +78,23 @@ fi
 
 if command -v code >/dev/null; then
   {{- $installed_extensions := splitList " " (output "sh" "-c" "code --list-extensions | tr '\n' ' '" | trim) }}
-    # Purge extensions not listed here
-  {{- range $installed_extensions }}
-    {{- if not (has . $extensions) }} 
+  {{- $installed_extensions_versioned := splitList " " (output "sh" "-c" "code --list-extensions --show-versions | tr '\n' ' '" | trim) }}
+   # Purge extensions not listed here
+  {{- range $i, $ext := $installed_extensions }}
+    {{- $full_ext := index $installed_extensions_versioned $i }}
+    {{- if and (not (has . $extensions)) (not (has $full_ext $extensions)) }}
     code --uninstall-extension "{{ . }}"
     {{- end }}
   {{- end }}
 
     # Install missing extensions
   {{- range $extensions }}
-    {{- if not (has . $installed_extensions) }}
+    {{- if and (not (contains "@" .)) (not (has . $installed_extensions)) }}
+    code --install-extension "{{ . }}"
+    {{- end }}
+  {{- end }}
+  {{- range $extensions }}
+    {{- if and (contains "@" .) (not (has . $installed_extensions_versioned)) }}
     code --install-extension "{{ . }}"
     {{- end }}
   {{- end }}
