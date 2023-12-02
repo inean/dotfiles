@@ -22,8 +22,7 @@ alias su='su -l'              # safer, simulate a real login
 # Git Helpers
 alias g="git"                 # git is a common command
 alias gnp="git --no-pager"    # git with no pager
-# If inside a github repo, open the repo in the browser
-alias gho="git remote -v | grep fetch | grep -oE 'https://github.com/\S+' | xargs -I{} open {}"
+alias gho="git remote -v | grep fetch | grep -oE 'https://github.com/\S+' | xargs -I{} open {}" # If inside a github repo, open the repo in the browser
 
 # List declared aliases, functions, paths
 alias aliases="alias | sed 's/=.*//'"
@@ -62,9 +61,15 @@ alias cd.='cd $(readlink -f .)'    # Go to real dir (i.e. if current dir is link
 alias ~="cd ~"                     # Go Home
 
 # Shortcuts
+{{- if eq .chezmoi.os "darwin" }}
 alias d="cd ~/Documents"
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
+{{- else }}
+alias d="cd $(xdg-user-dir DOCUMENTS)"
+alias d="cd $(xdg-user-dir DOWNLOAD)"
+alias d="cd $(xdg-user-dir DESKTOP)"
+{{- end }}
 alias p="cd ~/Projects"
 
 # Making/Changing directories.
@@ -81,8 +86,8 @@ alias p='$PAGER'
 alias b='$BROWSER'
 
 # Network
-alias ip="curl -s ipinfo.io | jq -r '.ip'"
-alias ipl="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
+alias ipg="curl -s ipinfo.io | jq -r '.ip'"
+alias ipl="ip addr | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'"
 alias http-serve='python3 -m http.server' # Serve a directory via HTTP.
 
 # Miscellaneous.
