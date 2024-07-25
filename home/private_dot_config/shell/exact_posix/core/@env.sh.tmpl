@@ -105,6 +105,9 @@ export XDG_PROJECTS_DIR="$HOME/Projects"
 # App specific overrides
 export GNUPGHOME="${XDG_DATA_HOME}/gnupg" && mkdir -p ${GNUPGHOME}
 
+# python
+export RYE_HOME="${XDG_CONFIG_HOME}/rye"
+
 # go
 export GOPATH="${XDG_DATA_HOME}/go"
 path_prepend "${GOPATH}/bin" PATH
