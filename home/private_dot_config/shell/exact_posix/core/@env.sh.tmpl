@@ -107,7 +107,8 @@ export GNUPGHOME="${XDG_DATA_HOME}/gnupg" && mkdir -p ${GNUPGHOME}
 
 # python
 export RYE_HOME="${XDG_CONFIG_HOME}/rye"
-
+path_prepend "${RYE_HOME}/shims" PATH
+ 
 # go
 export GOPATH="${XDG_DATA_HOME}/go"
 path_prepend "${GOPATH}/bin" PATH
