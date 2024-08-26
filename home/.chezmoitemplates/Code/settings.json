@@ -5,6 +5,12 @@
   "editor.formatOnType": true,
   "editor.formatOnSaveMode": "file",
   "editor.fontLigatures": true,
+  "editor.fontFamily": "'Fira Code'",
+  "editor.minimap.enabled": false,
+  "editor.accessibilitySupport": "off",
+
+  // Diff settings
+  "diffEditor.hideUnchangedRegions.enabled": true,
 
   // Files settings
   "files.insertFinalNewline": true,
@@ -20,6 +26,7 @@
   "security.workspace.trust.untrustedFiles": "open",
 
   // Terminal settings
+  "terminal.integrated.scrollback": 2000,
   {{- if eq .chezmoi.os "linux" }}
   "window.zoomLevel": 0.5,
   {{- end }}
@@ -62,16 +69,22 @@
   "dev.containers.autoRebuild": true,
 
   // Copilot
-  "github.copilot.enable": {
-    "*": true,
-    "plaintext": true,
-    "markdown": false,
-    "scminput": false
-  },
+  "github.copilot.chat.localeOverride": "en",
 
   // Json
   "json.format.keepLines": true,
 
-  // Pylance
+  // Python
+  "python.envFile": "${workspaceFolder}/.env",
   "python.venvPath": "${workspaceFolder}/.venv"
+
+  "[pylance]": {
+    "python.analysis.refactoring.allowMovingSymbols": true,
+  },
+
+  // Toml
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.arrayTrailingComma": true,
+  "evenBetterToml.formatter.columnWidth": 0,
+
 }
