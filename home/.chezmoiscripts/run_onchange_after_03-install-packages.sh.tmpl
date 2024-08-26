@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+{{- /* #General Dev packages */ -}}
+
+{{ if .core.coding }}
+  {{- if .flavors.python }}
+    # Check if RYE_HOME is defined
+    if [ -z "$RYE_HOME" ]; then
+      echo "Missing RYE_HOME environment variable. Please set it to the path of your Rye installation."
+      exit 1
+    fi
+    # Install if missing
+    if [ ! -x "$(command -v rye)" ]; then
+      rye_url="https://rye.astral.sh/get"
+      if [ "$(command -v curl)" ]; then
+        /bin/bash -c "$(curl -fsSL $rye_url)"
+        rye shell completion -s zsh  | tee ${ZSH_COMP_USER_DIR}/rye > /dev/null
+      else
+        echo "To install Rye, you must have curl installed." >&2
+        exit 1
+      fi
+    fi
+    # Update rye
+    rye shell update
+  {{- end -}}
+{{- end -}}
+

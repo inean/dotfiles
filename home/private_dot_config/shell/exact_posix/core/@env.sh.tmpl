@@ -96,7 +96,7 @@ export XDG_BIN_HOME="${HOME}/.local/bin" && mkdir -p ${XDG_BIN_HOME}
 export XDG_CACHE_HOME="${HOME}/.cache" && mkdir -p "${XDG_CACHE_HOME}"
 export XDG_CONFIG_HOME="${HOME}/.config" && mkdir -p ${XDG_CONFIG_HOME}
 export XDG_DATA_HOME="${HOME}/.local/share" && mkdir -p ${XDG_DATA_HOME}
-export XDG_LIB_HOME="${HOME}/.local/lib" && mkdir -p ${XDG_LIB_HOME}
+export XDG_OPT_HOME="${HOME}/.local/opt" && mkdir -p ${XDG_OPT_HOME}
 export XDG_STATE_HOME="${HOME}/.local/state" && mkdir -p ${XDG_STATE_HOME}
 
 # Export needed XDG user directories.
@@ -106,22 +106,22 @@ export XDG_PROJECTS_DIR="$HOME/Projects"
 export GNUPGHOME="${XDG_DATA_HOME}/gnupg" && mkdir -p ${GNUPGHOME}
 
 # python
-export RYE_HOME="${XDG_CONFIG_HOME}/rye"
+export RYE_HOME="${XDG_OPT_HOME}/rye"
 path_prepend "${RYE_HOME}/shims" PATH
- 
+
 # go
-export GOPATH="${XDG_DATA_HOME}/go"
+export GOPATH="${XDG_OPT_HOME}/go"
 path_prepend "${GOPATH}/bin" PATH
 
 # cargo
-export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
-export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export RUSTUP_HOME="${XDG_OPT_HOME}/rustup"
+export CARGO_HOME="${XDG_OPT_HOME}/cargo"
 path_prepend "${CARGO_HOME}/bin" PATH
 
 # npm
-export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
-export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
-export NODE_REPL_HISTORY="$XDG_STATE_HOME/node/repl_history"
+export NPM_CONFIG_PREFIX="${XDG_OPT_HOME}/npm"
+export NPM_CONFIG_USERCONFIG="${XDG_OPT_HOME}/npm/npmrc"
+export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node/repl_history"
 
 # brew
 {{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") -}}

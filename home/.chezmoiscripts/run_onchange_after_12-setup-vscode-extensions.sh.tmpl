@@ -9,57 +9,81 @@
 
 {{- if .core.personal -}}
 {{- $extensions = concat $extensions (list
+     "actboy168.tasks"
+     "github.copilot-chat"
+     "github.copilot"
+     "ms-ceintl.vscode-language-pack-es"
+     "mutantdino.resourcemonitor"
+     "shardulm94.trailing-spaces"
      "stkb.rewrap"
-     "yzhang.markdown-all-in-one"
-     "MS-CEINTL.vscode-language-pack-es"
-)}}
+     )}}
 
 {{- /* This should go into it's own profile... */ -}}
 {{- if .core.coding -}}
 {{- $extensions = concat $extensions (list
-     "actboy168.tasks"
-     "GitHub.copilot"
-     "GitHub.copilot-chat"
-     "ms-azuretools.vscode-docker@1.22.2"
      "ms-vscode-remote.remote-containers"
-     "mutantdino.resourcemonitor"
+     "ms-vscode.remote-explorer"
+     "ms-vscode.remote-server"
      "tamasfe.even-better-toml"
+     "usernamehw.errorlens"
+     "redhat.vscode-yaml"
+     )}}
+{{- end }}
+
+{{- if .flavors.markdown -}}
+{{- $_ := set $profile_extensions "markdown" (list
+     "bierner.markdown-preview-github-styles"
+     "davidanson.vscode-markdownlint"
+     "yzhang.markdown-all-in-one"
+
+)}}
+{{- end }}
+
+{{- if .flavors.containers -}}
+{{- $_ := set $profile_extensions "containers" (list
+     "exiasr.hadolint"
+     "ms-azuretools.vscode-docker"
+)}}
+{{- end }}
+
+{{- if .flavors.python -}}
+{{- $_ := set $profile_extensions "python" (list
+     "charliermarsh.ruff"
+     "kevinrose.vsc-python-indent"
+     "ms-python.debugpy"
+     "ms-python.python"
+     "ms-python.vscode-pylance"
 )}}
 {{- end }}
 
 {{- if .flavors.rust -}}
 {{- $_ := set $profile_extensions "rust" (list
      "rust-lang.rust-analyzer"
-     "vadimcn.vscode-lldb"
      "serayuzgur.crates"
+     "vadimcn.vscode-lldb"
 )}}
 {{- end }}
 
 {{- $old_extensions = concat $old_extensions (list
-     "bungcip.better-toml"
-     "DavidAnson.vscode-markdownlint"
      "devMike.mikrotik-routeros-script"
      "EditorConfig.EditorConfig"
      "foxundermoon.shell-format"
      "hashicorp.hcl"
      "mads-hartmann.bash-ide-vscode"
-     "mesonbuild.mesonbuild"
-     "ms-azuretools.vscode-docker"
-     "ms-python.python"
      "ms-python.isort"
-     "ms-python.python"
-     "ms-python.vscode-pylance"
-     "ms-vscode-remote.remote-ssh"
      "ms-vscode-remote.remote-ssh-edit"
      "ms-vscode-remote.vscode-remote-extensionpack"
      "redhat.vscode-yaml"
-     "rust-lang.rust-analyzer"
      "streetsidesoftware.code-spell-checker"
      "twpayne.vscode-testscript"
      "Tyriar.sort-lines"
      "vscode-icons-team.vscode-icons"
-     "yzhang.markdown-all-in-one")
--}}
+)}}
+{{- end -}}
+
+{{- /* Merge profile entensions into one big install */ -}}
+{{- range $key, $value := $profile_extensions -}}
+  {{- $extensions = concat $extensions $value -}}
 {{- end -}}
 
 {{ if len $extensions  -}}

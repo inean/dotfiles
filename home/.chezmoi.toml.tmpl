@@ -6,11 +6,14 @@
 {{- $headless  := false -}}{{/* true if this machine is a remote one */}}
 
 {{/* Developer flavors */}}
-{{- $go      := false -}}
-{{- $rust    := false -}}
-{{- $shell   := false -}}
-{{- $python  := false -}}
-{{- $android := false -}}
+{{- $containers := true -}}
+{{- $go         := false -}}
+{{- $typescript := true  -}}
+{{- $rust       := false -}}
+{{- $shell      := true -}}
+{{- $python     := true -}}
+{{- $android    := false -}}
+{{- $markdown   := true -}}
 {{- "" -}}
 
 {{/* Packing system */}}
@@ -34,7 +37,7 @@
 {{-     end -}}
 {{-   end -}}
 {{  end -}}
-        
+
 {{/* detect MacOS version */}}
 {{- if eq .chezmoi.os "darwin" -}}
     {{ $macos_version := output "sw_vers" "-productVersion" | trim }}
@@ -122,4 +125,8 @@ encryption = "age"
     flavors.rust = {{ $rust }}
     flavors.shell = {{ $shell }}
     flavors.android = {{ $android }}
+    flavors.typescript = {{ $typescript }}
+    flavors.containers = {{ $containers }}
+    flavors.markdown = {{ $markdown }}
+
 

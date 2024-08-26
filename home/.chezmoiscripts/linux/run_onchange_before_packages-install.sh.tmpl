@@ -1,7 +1,10 @@
-{{- 
-$install_packages := list 
-    "zsh"
+{{-
+$install_packages := list ("zsh")
 -}}
+
+{{- if .core.coding }}
+{{-    $install_packages = concat $install_packages (list "gh")}}
+{{- end -}}
 
 {{- if (output "sh" "-c" "lspci | grep BCM4360") }}
 {{-    $install_packages = concat $install_packages (list "kmod-wl" "intel-media-driver")}}
@@ -9,7 +12,7 @@ $install_packages := list
 
 {{- $sudo := "sudo " -}}
 {{- if eq .chezmoi.username "root" -}}
-{i-   $sudo = "" -}}
+{{-   $sudo = "" -}}
 {{- end -}}
 
 #!/bin/sh
@@ -18,9 +21,9 @@ set -eu -o pipefail
 
 # rerun in installed packages changes: {{ output "rpm" "-qa" "--qf" "\"%{NAME} \"" | sha256sum }}
 
-{{/* On silverblue install minimal packages on ostree. Tools on a toolbox */}} 
+{{/* On silverblue install minimal packages on ostree. Tools on a toolbox */}}
 {{- if eq .osid "fedora-silverblue" }}
   {{- if $install_packages }}
     {{- $sudo }}rpm-ostree install --idempotent {{range $install_packages }} {{ . }} {{ end }}
-  {{- end }}  
+  {{- end }}
 {{- end }}

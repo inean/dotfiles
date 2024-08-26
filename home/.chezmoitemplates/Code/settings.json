@@ -16,12 +16,15 @@
   // Workbenck settings
   "telemetry.telemetryLevel": "off",
 
-  // Terminal settings
-{{- if eq .chezmoi.os "linux" }}
-  "window.zoomLevel": 0.5,
-{{- end }}
+  // Security settings
+  "security.workspace.trust.untrustedFiles": "open",
 
-{{- if .pkgs.flatpak }}
+  // Terminal settings
+  {{- if eq .chezmoi.os "linux" }}
+  "window.zoomLevel": 0.5,
+  {{- end }}
+
+  {{- if .pkgs.flatpak }}
   "terminal.integrated.profiles.linux": {
     "zsh (login)": {
       "path": "host-spawn",
@@ -45,17 +48,17 @@
     "LD_PRELOAD": null,
   },
   "terminal.integrated.defaultProfile.linux": "zsh (login)",
-{{- end }}
+  {{- end }}
   "terminal.integrated.fontFamily": "MesloLGS NF",
 
   // Extensions Options
 
   // DevContainers
-{{- if .pkgs.flatpak }}
+  {{- if .pkgs.flatpak }}
   "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
-{{- else }}
+  {{- else }}
   "dev.containers.dockerPath": "podman",
-{{- end }}
+  {{- end }}
   "dev.containers.autoRebuild": true,
 
   // Copilot
@@ -67,5 +70,8 @@
   },
 
   // Json
-  "json.format.keepLines": true
+  "json.format.keepLines": true,
+
+  // Pylance
+  "python.venvPath": "${workspaceFolder}/.venv"
 }
