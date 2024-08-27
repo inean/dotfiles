@@ -28,7 +28,7 @@ set -eufo pipefail
       fi
     fi
     # Update rye
-    rye self update
+    rye self update || true
   {{- end -}}
 {{- end -}}
 

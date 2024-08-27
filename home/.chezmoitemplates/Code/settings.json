@@ -60,11 +60,13 @@
 
   // Extensions Options
 
-  // DevContainers
+  // Containers
   {{- if .pkgs.flatpak }}
   "dev.containers.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
+  "docker.dockerPath": {{ joinPath .chezmoi.homeDir ".local/bin/podman-host" | quote }},
   {{- else }}
   "dev.containers.dockerPath": "podman",
+  "docker.dockerPath": "podman",
   {{- end }}
   "dev.containers.autoRebuild": true,
 
@@ -76,7 +78,7 @@
 
   // Python
   "python.envFile": "${workspaceFolder}/.env",
-  "python.venvPath": "${workspaceFolder}/.venv"
+  "python.venvPath": "${workspaceFolder}/.venv",
 
   "[pylance]": {
     "python.analysis.refactoring.allowMovingSymbols": true,
