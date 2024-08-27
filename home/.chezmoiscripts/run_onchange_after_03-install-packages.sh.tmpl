@@ -12,18 +12,23 @@ set -eufo pipefail
       exit 1
     fi
     # Install if missing
-    if [ ! -x "$(command -v rye)" ]; then
+    if ! command -v rye &> /dev/null; then
       rye_url="https://rye.astral.sh/get"
       if [ "$(command -v curl)" ]; then
         /bin/bash -c "$(curl -fsSL $rye_url)"
-        rye shell completion -s zsh  | tee ${ZSH_COMP_USER_DIR}/rye > /dev/null
+        # Zsh User autocompletions
+        ZSH_COMP_USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh_completion"
+        if [ ! -d "${ZSH_COMP_USER_DIR}" ]; then
+          mkdir "${ZSH_COMP_USER_DIR}"
+          rye shell completion -s zsh  | tee ${ZSH_COMP_USER_DIR}/rye > /dev/null
+        fi
       else
         echo "To install Rye, you must have curl installed." >&2
         exit 1
       fi
     fi
     # Update rye
-    rye shell update
+    rye self update
   {{- end -}}
 {{- end -}}
 
