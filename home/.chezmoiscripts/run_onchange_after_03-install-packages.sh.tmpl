@@ -6,29 +6,54 @@ set -eufo pipefail
 
 {{ if .core.coding }}
   {{- if .flavors.python }}
-    # Check if RYE_HOME is defined
-    if [ -z "$RYE_HOME" ]; then
-      echo "Missing RYE_HOME environment variable. Please set it to the path of your Rye installation."
+    # Check if UV_INSTALL_DIR is defined
+    if [ -z "$UV_INSTALL_DIR" ]; then
+      echo "Missing UV_INSTALL_DIR environment variable. Please set it to the path of your UV installation."
       exit 1
     fi
     # Install if missing
-    if ! command -v rye &> /dev/null; then
-      rye_url="https://rye.astral.sh/get"
+    if ! command -v uv &> /dev/null; then
+      uv_url="https://astral.sh/uv/install.sh"
       if [ "$(command -v curl)" ]; then
-        /bin/bash -c "$(curl -fsSL $rye_url)"
+        INSTALLER_NO_MODIFY_PATH=1 /bin/bash -c "$(curl -fsSL $uv_url)"
         # Zsh User autocompletions
         ZSH_COMP_USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh_completion"
         if [ ! -d "${ZSH_COMP_USER_DIR}" ]; then
-          mkdir "${ZSH_COMP_USER_DIR}"
-          rye shell completion -s zsh  | tee ${ZSH_COMP_USER_DIR}/rye > /dev/null
+          mkdir -p "${ZSH_COMP_USER_DIR}"
+          uv generate-shell-completion zsh | tee ${ZSH_COMP_USER_DIR}/uv > /dev/null
+          uvx --generate-shell-completion zsh | tee ${ZSH_COMP_USER_DIR}/uvx > /dev/null
         fi
       else
-        echo "To install Rye, you must have curl installed." >&2
+        echo "To install uv, you must have curl installed." >&2
         exit 1
       fi
     fi
-    # Update rye
-    rye self update || true
+    # Update uv
+    ${UV_INSTALL_DIR}/bin/uv self update || true
+  {{- end -}}
+
+  {{- if .flavors.typescript }}
+    # Check if VOLTA_HOME is defined
+    if [ -z "$VOLTA_HOME" ]; then
+      echo "Missing VOLTA_HOME environment variable. Please set it to the path of your Volta installation."
+      exit 1
+    fi
+    # Install if missing
+    if ! command -v volta &> /dev/null; then
+      volta_url="https://get.volta.sh"
+      if [ "$(command -v curl)" ]; then
+        # Install Volta
+        /bin/bash -c "$(curl -fsSL $volta_url)" -- --skip-setup
+        # Zsh User autocompletions
+        ZSH_COMP_USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh_completion"
+        if [ ! -d "${ZSH_COMP_USER_DIR}" ]; then
+          mkdir -p "${ZSH_COMP_USER_DIR}"
+          volta completions zsh | tee ${ZSH_COMP_USER_DIR}/volta > /dev/null
+        fi
+      else
+        echo "To install volta, you must have curl installed." >&2
+        exit 1
+      fi
+    fi
   {{- end -}}
 {{- end -}}
-

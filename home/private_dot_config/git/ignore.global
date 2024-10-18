@@ -57,6 +57,10 @@ Thumbs.db
 tags
 compile_commands.json
 
+# Include specific lock files that should be commited
+!uv.lock
+!requirements.lock
+
 # Temp files #
 #####################
 *~

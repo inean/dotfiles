@@ -77,16 +77,22 @@
   "json.format.keepLines": true,
 
   // Python
-  "python.envFile": "${workspaceFolder}/.env",
+  "python.envFile": "",
   "python.venvPath": "${workspaceFolder}/.venv",
 
   "[pylance]": {
     "python.analysis.refactoring.allowMovingSymbols": true,
   },
 
-  // Toml
-  "evenBetterToml.formatter.arrayAutoExpand": true,
-  "evenBetterToml.formatter.arrayTrailingComma": true,
-  "evenBetterToml.formatter.columnWidth": 0,
+  // Mypy
+  "mypy.runUsingActiveInterpreter": true,
 
+  // Toml
+  "evenBetterToml.formatter.arrayAutoCollapse": false,
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.allowedBlankLines": 1,
+  "evenBetterToml.formatter.arrayTrailingComma": true,
+  "evenBetterToml.formatter.indentEntries": true,
+  "evenBetterToml.formatter.indentTables": true,
+  "evenBetterToml.formatter.reorderKeys": true,
 }

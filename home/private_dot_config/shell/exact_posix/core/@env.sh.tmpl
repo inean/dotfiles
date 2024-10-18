@@ -105,23 +105,30 @@ export XDG_PROJECTS_DIR="$HOME/Projects"
 # App specific overrides
 export GNUPGHOME="${XDG_DATA_HOME}/gnupg" && mkdir -p ${GNUPGHOME}
 
-# python
-export RYE_HOME="${XDG_OPT_HOME}/rye"
-path_prepend "${RYE_HOME}/shims" PATH
+{{- if .core.coding }}
 
-# go
+{{- if .flavors.python }}
+export UV_INSTALL_DIR="${XDG_OPT_HOME}/uv"
+path_prepend "${UV_INSTALL_DIR}/bin" PATH
+{{- end -}}
+
+{{- if .flavors.go }}
 export GOPATH="${XDG_OPT_HOME}/go"
 path_prepend "${GOPATH}/bin" PATH
+{{- end -}}
 
-# cargo
+{{- if .flavors.rust }}
 export RUSTUP_HOME="${XDG_OPT_HOME}/rustup"
 export CARGO_HOME="${XDG_OPT_HOME}/cargo"
 path_prepend "${CARGO_HOME}/bin" PATH
+{{- end -}}
 
-# npm
-export NPM_CONFIG_PREFIX="${XDG_OPT_HOME}/npm"
-export NPM_CONFIG_USERCONFIG="${XDG_OPT_HOME}/npm/npmrc"
-export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node/repl_history"
+{{- if .flavors.typescript }}
+export VOLTA_HOME="${XDG_OPT_HOME}/volta"
+path_prepend "${VOLTA_HOME}/bin" PATH
+{{- end -}}
+
+{{- end }}
 
 # brew
 {{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") -}}

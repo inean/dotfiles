@@ -55,7 +55,15 @@
      "kevinrose.vsc-python-indent"
      "ms-python.debugpy"
      "ms-python.python"
+     "matangover.mypy"
      "ms-python.vscode-pylance"
+)}}
+{{- end }}
+
+{{- if .flavors.typescript -}}
+{{- $_ := set $profile_extensions "rust" (list
+    "astro-build.astro-vscode"
+    "svelte.svelte-vscode"
 )}}
 {{- end }}
 
